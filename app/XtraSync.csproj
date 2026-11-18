@@ -8,9 +8,11 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseSharedCompilation>false</UseSharedCompilation>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\XtraSync.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
     <EmbeddedResource Include="..\docs\XtraSync-help.html" LogicalName="XtraSync.UserHelp.html" />
+    <Resource Include="Assets\XtraSync.ico" />
   </ItemGroup>
 </Project>

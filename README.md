@@ -39,3 +39,9 @@ dotnet build .\XtraSync.slnx -m:1
 `Test.ps1` runs the suite and checks coverage thresholds. `Publish.ps1` produces the self-contained Windows x64 executable at `Publish/XtraSync.exe`. You can also run `Publish.bat` from Explorer. The production executable is distributed through GitHub Releases.
 
 See the [test suite](tests/README.md), [execution error policy](ERROR-POLICY.md), and [credits](CREDITS.md) for details.
+
+## License and donations
+
+XtraSync is open source under the [MIT License](LICENSE). Donations are entirely optional and every feature is available free of charge.
+
+If XtraSync is useful to you, you can support its development through [Buy Me a Coffee](https://buymeacoffee.com/knhsynths).

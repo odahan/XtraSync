@@ -1,3 +1,5 @@
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -42,6 +44,21 @@ public partial class MainWindow : Window
             viewModel.RememberExclusions();
         };
         SourceInitialized += (_, _) => DarkChrome.Apply(this);
+    }
+
+    /// <summary>Opens the optional donation page in the default browser.</summary>
+    private void OpenDonationPage(object sender, RoutedEventArgs e)
+    {
+        const string donationUrl = "https://buymeacoffee.com/knhsynths";
+        try
+        {
+            Process.Start(new ProcessStartInfo(donationUrl) { UseShellExecute = true })?.Dispose();
+        }
+        catch (Exception exception) when (exception is Win32Exception or InvalidOperationException)
+        {
+            MessageBox.Show(this, $"The donation page could not be opened. Visit {donationUrl} in your browser.",
+                "Buy Me a Coffee", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
     }
 
     private FilterSettings? EditFilters(FilterSettings settings)
