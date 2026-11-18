@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="app/XtraSync.csproj" />
+  <Folder Name="/tests/">
+    <Project Path="tests/XtraSync.Tests/XtraSync.Tests.csproj" />
+  </Folder>
+</Solution>

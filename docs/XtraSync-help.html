@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="XtraSync user guide in English and French: comparison, mirrors, two-way synchronization, exclusions, progress, reports and error recovery.">
+  <title>XtraSync · User guide / Guide utilisateur</title>
+  <style>
+    :root { color-scheme: dark; --bg: #191d23; --panel: #242831; --text: #e3e7ef; --muted: #b7c5da; --line: #46546b; --blue: #93c5fd; --gold: #fcd34d; }
+    * { box-sizing: border-box; }
+    html { scroll-padding-top: 7rem; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.7 "Segoe UI", system-ui, sans-serif; }
+    a { color: var(--blue); text-underline-offset: .22em; }
+    a:hover { color: #dbeafe; }
+    :focus-visible { outline: 3px solid var(--gold); outline-offset: 5px; }
+    button { font: inherit; cursor: pointer; }
+    .skip { position: absolute; top: -8rem; left: 1rem; background: var(--panel); padding: .75rem; z-index: 5; }
+    .skip:focus { top: 1rem; }
+    header { position: sticky; top: 0; z-index: 2; background: #191d23; border-bottom: 1px solid var(--line); }
+    .header-inner { max-width: 1300px; margin: auto; padding: 1rem 2rem; display: flex; align-items: center; gap: 1.5rem; justify-content: space-between; }
+    .brand { font-size: 1.5rem; font-weight: 650; letter-spacing: -.04em; }
+    .subtitle { color: var(--muted); font-size: .8rem; margin-left: .8rem; }
+    .language-controls { display: flex; gap: .5rem; }
+    .language-controls button { color: var(--text); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: .45rem .9rem; }
+    .language-controls button[aria-pressed="true"] { background: #265c98; border-color: var(--blue); }
+    [hidden] { display: none !important; }
+    .layout { max-width: 1300px; margin: auto; display: grid; grid-template-columns: 245px minmax(0, 1fr); gap: 3.5rem; padding: 2.5rem 2rem 5rem; }
+    nav { position: sticky; top: 7rem; align-self: start; max-height: calc(100vh - 8rem); overflow-y: auto; font-size: .9rem; }
+    nav strong { display: block; color: var(--muted); font-size: .75rem; letter-spacing: .1em; margin-bottom: .8rem; text-transform: uppercase; }
+    nav a { display: block; padding: .35rem .2rem; text-decoration: none; }
+    main { min-width: 0; max-width: 850px; }
+    .eyebrow { color: var(--blue); text-transform: uppercase; font-size: .78rem; letter-spacing: .13em; font-weight: 600; }
+    h1, h2, h3 { line-height: 1.25; }
+    h1 { font-size: clamp(2.2rem, 5vw, 3.3rem); letter-spacing: -.045em; margin: .5rem 0 1.2rem; }
+    h2 { font-size: 1.7rem; margin: 0 0 1rem; letter-spacing: -.025em; }
+    h3 { font-size: 1.13rem; margin: 1.7rem 0 .6rem; }
+    p { margin: .7rem 0 1rem; }
+    .lead { font-size: 1.16rem; color: var(--muted); }
+    section { padding-top: 2.5rem; margin-top: 2.5rem; border-top: 1px solid var(--line); }
+    ul, ol { padding-left: 1.5rem; }
+    li { margin: .45rem 0; }
+    .callout { background: var(--panel); border-left: 3px solid var(--blue); border-radius: 0 6px 6px 0; padding: .9rem 1.2rem; margin: 1.5rem 0; }
+    .warning { border-color: var(--gold); }
+    .callout p:first-child { margin-top: 0; }
+    .callout p:last-child { margin-bottom: 0; }
+    .table-wrap { overflow-x: auto; margin: 1.3rem 0; border: 1px solid var(--line); border-radius: 6px; }
+    table { border-collapse: collapse; width: 100%; font-size: .94rem; }
+    th { text-align: left; background: #303846; }
+    th, td { padding: .8rem 1rem; vertical-align: top; border-bottom: 1px solid var(--line); }
+    tr:last-child td { border-bottom: 0; }
+    td:first-child { min-width: 150px; }
+    code, pre, kbd { font-family: Consolas, monospace; font-size: .92em; }
+    code { color: #c4dcff; overflow-wrap: anywhere; }
+    pre { background: #12161c; padding: 1rem 1.2rem; border: 1px solid var(--line); border-radius: 6px; overflow: auto; line-height: 1.6; }
+    kbd { border: 1px solid var(--line); border-radius: 3px; padding: .1rem .3rem; }
+    .small, footer { color: var(--muted); font-size: .88rem; }
+    footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+    @media (max-width: 850px) { .layout { grid-template-columns: 1fr; gap: 2rem; padding: 1.5rem 1.2rem 3rem; } nav { position: static; max-height: none; columns: 2; } nav strong { column-span: all; } nav a { break-inside: avoid; } .header-inner { padding: .8rem 1.2rem; } .subtitle { display: none; } }
+    @media (max-width: 460px) { nav { columns: 1; } .language-controls button { padding: .4rem .6rem; } }
+    @media print { :root { --bg: white; --text: #151515; --muted: #333; --blue: #164b7b; --panel: #f4f4f4; --line: #aaa; } header { position: static; background: white; } nav, .language-controls, .skip { display: none; } .layout { display: block; padding: 0; } main { max-width: none; } pre { background: #f4f4f4; white-space: pre-wrap; } code { color: #164b7b; } th { background: #eee; } section { break-before: auto; } h2, h3 { break-after: avoid; } }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#content">Skip to guide / Aller au guide</a>
+  <header>
+    <div class="header-inner">
+      <div><span class="brand">XtraSync</span><span class="subtitle">User guide · Guide utilisateur</span></div>
+      <div class="language-controls" role="group" aria-label="Language / Langue" hidden>
+        <button type="button" data-language="fr" lang="fr" aria-pressed="false">Français</button>
+        <button type="button" data-language="en" lang="en" aria-pressed="false">English</button>
+      </div>
+    </div>
+  </header>
+  <div class="layout">
+    <nav aria-label="Guide contents / Sommaire">
+      <div data-lang="fr" lang="fr">
+        <strong>Dans ce guide</strong>
+        <a href="#fr-start">Premiers pas</a><a href="#fr-modes">Choisir un mode</a><a href="#fr-rules">Règles de comparaison</a>
+        <a href="#fr-filters">Exclusions et filtres</a><a href="#fr-review">Valider les modifications</a><a href="#fr-progress">Suivi et commandes</a>
+        <a href="#fr-errors">Erreurs et arrêts</a><a href="#fr-logs">Logs et rapports HTML</a><a href="#fr-settings">Préférences et fichiers</a>
+        <a href="#fr-limits">Périmètre et protections</a><a href="#fr-trouble">Résoudre un problème</a><a href="#fr-help">Cette aide</a>
+      </div>
+      <div data-lang="en" lang="en">
+        <strong>In this guide</strong>
+        <a href="#en-start">Getting started</a><a href="#en-modes">Choosing a mode</a><a href="#en-rules">Comparison rules</a>
+        <a href="#en-filters">Exclusions and filters</a><a href="#en-review">Reviewing changes</a><a href="#en-progress">Progress and controls</a>
+        <a href="#en-errors">Errors and stopping</a><a href="#en-logs">Logs and HTML reports</a><a href="#en-settings">Preferences and files</a>
+        <a href="#en-limits">Scope and protections</a><a href="#en-trouble">Troubleshooting</a><a href="#en-help">About this help</a>
+      </div>
+    </nav>
+    <main id="content" tabindex="-1">
+      <article data-lang="fr" lang="fr" aria-labelledby="fr-title">
+        <div class="eyebrow">Guide utilisateur · Français</div>
+        <h1 id="fr-title">Comparer, comprendre,<br>synchroniser.</h1>
+        <p class="lead">Tout ce qu’il faut savoir pour comparer deux dossiers, créer un miroir ou synchroniser dans les deux sens avec XtraSync.</p>
+        <p>L’interface de l’application est en anglais. Les noms de boutons sont donc conservés tels qu’ils apparaissent à l’écran. Cette aide fonctionne hors connexion. Utilisez le sommaire, <kbd>Ctrl</kbd> + <kbd>F</kbd> pour rechercher et <kbd>Ctrl</kbd> + <kbd>P</kbd> pour imprimer la langue affichée.</p>
+        <div class="callout warning"><p><strong>Un miroir peut supprimer des données.</strong> Vérifiez le sens de l’opération et le récapitulatif avant de valider. Les suppressions sont définitives, hors Corbeille, et les versions remplacées ne sont pas archivées par XtraSync. Une opération interrompue ne restaure pas les changements déjà terminés.</p></div>
+
+        <section id="fr-start"><h2>01 · Premiers pas</h2>
+          <ol>
+            <li>Lancez <code>XtraSync.exe</code> depuis un emplacement où vous pouvez écrire : l’application y place ses logs, ses rapports et son aide.</li>
+            <li>Renseignez <strong>LEFT FOLDER</strong> (dossier gauche) et <strong>RIGHT FOLDER</strong> (dossier droit), par saisie ou avec <strong>Browse…</strong>. Les deux dossiers doivent déjà exister, être accessibles et être distincts ; aucun ne doit contenir l’autre.</li>
+            <li>Choisissez les critères de comparaison et les exclusions. Par défaut, les sous-dossiers, les tailles et les dates sont pris en compte, avec une tolérance de deux secondes.</li>
+            <li>Commencez avec <strong>Compare folders</strong> pour voir les différences. Cette comparaison ne modifie pas les données des dossiers ; elle crée toutefois le log de l’opération et, si demandé, un rapport.</li>
+            <li>Choisissez ensuite un miroir ou une synchronisation bidirectionnelle. Examinez la liste exacte des actions, leurs nombres et leurs tailles, puis validez avec <strong>Apply mirror</strong> ou <strong>Apply synchronization</strong>.</li>
+            <li>Lisez le résultat final. En cas de problèmes ou d’avertissements, consultez <code>XtraSync.log</code>, dont le chemin apparaît en bas de la fenêtre.</li>
+          </ol>
+          <p>Les listes déroulantes des dossiers conservent séparément les dix derniers chemins de gauche et de droite, sans doublons. Choisir un historique ne lance aucune opération.</p>
+        </section>
+
+        <section id="fr-modes"><h2>02 · Choisir un mode</h2>
+          <div class="table-wrap"><table><caption class="small">Effets des quatre commandes principales</caption><thead><tr><th scope="col">Commande</th><th scope="col">Comportement</th></tr></thead><tbody>
+            <tr><td><strong>Compare folders</strong></td><td>Balaye les deux côtés et affiche leurs différences, sans copier ni supprimer de données.</td></tr>
+            <tr><td><strong>Mirror to right →</strong></td><td>La gauche est la source, la droite est la cible. Copie les éléments manquants ou différents de gauche vers la droite ; supprime de la droite les éléments absents de la source, dans le périmètre retenu.</td></tr>
+            <tr><td><strong>← Mirror to left</strong></td><td>La droite est la source, la gauche est la cible. Les mêmes règles s’appliquent en sens inverse.</td></tr>
+            <tr><td><strong>Synchronize Both Way</strong></td><td>Copie les éléments présents d’un seul côté vers l’autre, et remplace une version plus ancienne par la version plus récente lorsque les règles permettent de la départager. Aucune suppression n’est propagée.</td></tr>
+          </tbody></table></div>
+          <p><strong>En miroir, la source fait autorité :</strong> un fichier cible différent peut être remplacé même s’il est plus récent. Un conflit fichier/dossier peut entraîner la suppression de l’ancien élément cible et sa recréation sous le type de la source ; ces actions figurent dans la validation.</p>
+          <p><strong>En bidirectionnel, une suppression n’est pas mémorisée :</strong> si vous effacez un fichier d’un côté mais qu’il existe encore de l’autre, il sera recopié. Les conflits fichier/dossier et les différences sans version plus récente identifiable sont laissés inchangés et signalés dans l’aperçu. Résolvez-les manuellement puis relancez une opération.</p>
+        </section>
+
+        <section id="fr-rules"><h2>03 · Règles de comparaison</h2>
+          <p>XtraSync compare les <strong>métadonnées</strong> des fichiers : taille et date de modification. Il ne calcule pas d’empreinte et ne compare pas leur contenu octet par octet. Deux fichiers de même taille et de même date peuvent donc être indiqués égaux alors que leur contenu diffère.</p>
+          <div class="table-wrap"><table><thead><tr><th scope="col">Option</th><th scope="col">Effet</th></tr></thead><tbody>
+            <tr><td><strong>Subfolders included</strong></td><td>Cochée par défaut. Inclut les sous-dossiers et leur contenu. Décochée, limite le travail aux fichiers directement dans les racines : les sous-dossiers et leur contenu ne sont ni copiés ni supprimés.</td></tr>
+            <tr><td><strong>Compare sizes</strong></td><td>Cochée par défaut. Une différence de taille signale une différence lorsque les dates ne désignent pas déjà une version plus récente.</td></tr>
+            <tr><td><strong>Compare timestamps</strong></td><td>Cochée par défaut. Permet de distinguer la version la plus récente et de guider les copies bidirectionnelles.</td></tr>
+            <tr><td><strong>Tolerance (seconds)</strong></td><td>Entier positif ou nul, initialement 2. Un écart de dates inférieur ou égal à cette tolérance est considéré équivalent. Les dates sont comparées à la seconde.</td></tr>
+            <tr><td><strong>Ignore whole-hour time zone differences</strong></td><td>Décochée par défaut. Considère équivalents les écarts proches d’un nombre entier d’heures, dans la tolérance choisie, pour des écarts inférieurs à 24 heures. À utiliser uniquement si le décalage horaire explique réellement ces différences.</td></tr>
+          </tbody></table></div>
+          <p>Si les deux critères sont décochés, deux fichiers présents au même chemin sont considérés égaux, quel que soit leur contenu. Si les dates sont désactivées ou équivalentes et que les tailles diffèrent, le mode bidirectionnel ne choisit pas arbitrairement une version : il signale un conflit.</p>
+          <h3>Lire le tableau des résultats</h3>
+          <p>Les chemins sont relatifs aux racines sélectionnées ; les dates affichées utilisent l’heure locale. <strong>Equal</strong> signifie égal selon vos critères, <strong>Left only</strong> / <strong>Right only</strong> présent d’un seul côté, <strong>Left newer</strong> / <strong>Right newer</strong> plus récent à gauche / à droite, <strong>Different size</strong> taille différente, <strong>Folder</strong> dossier des deux côtés, <strong>Type conflict</strong> fichier d’un côté et dossier de l’autre, et <strong>Unavailable</strong> accès insuffisant pour conclure.</p>
+        </section>
+
+        <section id="fr-filters"><h2>04 · Exclusions et filtres</h2>
+          <div class="callout"><p><strong>Le filtrage agit en amont, pendant le balayage.</strong> Les fichiers exclus ne sont pas ouverts pour lire leur contenu ni comparés ; les dossiers exclus ne sont pas parcourus. Leurs noms et, lorsque nécessaire, leur type sont néanmoins examinés pour appliquer le filtre.</p></div>
+          <h3>Saisie sur l’écran principal</h3>
+          <p>La zone <strong>Exclusions</strong> est une liste déroulante éditable. Séparez les motifs par un point-virgule :</p>
+          <pre><code>*.tmp; .git; file:*.bak; folder:bin; folder:obj; file:cache/*.log</code></pre>
+          <ul><li>Sans préfixe, le motif vise les fichiers <em>et</em> les dossiers.</li><li><code>file:</code> limite le motif aux fichiers ; <code>folder:</code> aux dossiers.</li><li>La ligne courante est sauvegardée automatiquement, même saisie manuellement ou vidée. Les dix dernières lignes complètes non vides sont conservées sans doublons. Validez avec Entrée ou quittez la zone pour mémoriser une ligne ; une ligne réutilisée revient en tête.</li></ul>
+          <h3>Dialogue Filters…</h3>
+          <p>Le bouton à icône de filtre ouvre <strong>Name filters</strong>. À l’ouverture, la ligne principale est décomposée dans <strong>Exclude files and folders</strong>, <strong>Exclude files</strong> et <strong>Exclude folders</strong>. Entrez <strong>un motif par ligne, sans point-virgule</strong>, et sans ajouter les préfixes <code>file:</code> / <code>folder:</code> dans les champs spécialisés.</p>
+          <p><strong>Save filters</strong> reconstruit et sauvegarde la ligne principale avec ses séparateurs et préfixes. <strong>Cancel</strong> abandonne les modifications du dialogue. <strong>Clear filters</strong> vide le brouillon ; cliquez ensuite sur Save filters pour appliquer ce changement.</p>
+          <h3>Syntaxe des motifs</h3>
+          <div class="table-wrap"><table><thead><tr><th scope="col">Motif</th><th scope="col">Correspondance</th></tr></thead><tbody>
+            <tr><td><code>*.tmp</code></td><td>Noms terminant par <code>.tmp</code>, à n’importe quelle profondeur.</td></tr>
+            <tr><td><code>photo?.jpg</code></td><td>Un seul caractère à la place de <code>?</code>, par exemple <code>photo1.jpg</code>.</td></tr>
+            <tr><td><code>folder:cache</code></td><td>Tout dossier nommé <code>cache</code>, et tout son contenu.</td></tr>
+            <tr><td><code>file:cache/*.log</code></td><td>Fichiers <code>.log</code> directement dans <code>cache</code> à la racine ; ne vise pas <code>other/cache/a.log</code> ni <code>cache/sub/a.log</code>.</td></tr>
+          </tbody></table></div>
+          <p><code>*</code> représente zéro ou plusieurs caractères et <code>?</code> un caractère, sans traverser un séparateur de dossier. Un motif sans séparateur vise un nom à toute profondeur ; avec <code>/</code> ou <code>\</code>, il vise un chemin relatif à la racine. La casse est ignorée. Les espaces en début et fin sont retirés ; les espaces internes et les virgules sont littéraux. Il n’y a ni syntaxe d’inclusion, ni exception avec <code>!</code>, ni signification récursive spéciale de <code>**</code>. Le point-virgule est réservé à la séparation des motifs.</p>
+          <h3>Que devient l’élément correspondant dans la cible ?</h3>
+          <p><strong>En miroir :</strong> les éléments exclus sont absents de la source logique. Par défaut, les éléments cibles correspondant aux exclusions sont préservés ; les dossiers qui les contiennent sont protégés contre une suppression ou un remplacement destructeur.</p>
+          <p>L’option principale <strong>Delete excluded items from mirror destination</strong>, décochée initialement, autorise leur suppression dans la cible du miroir. Les suppressions sont incluses dans le récapitulatif à valider. Le sens s’inverse avec le miroir choisi. Pour préparer ces suppressions, la cible doit être inspectée, y compris ses éléments exclus ; la source reste filtrée en amont.</p>
+          <p><strong>En bidirectionnel :</strong> les exclusions sont simplement ignorées des deux côtés, sans copie ni suppression. L’option de suppression des exclus n’y est jamais appliquée, même si elle reste cochée ; un avertissement est alors journalisé.</p>
+        </section>
+
+        <section id="fr-review"><h2>05 · Valider les modifications</h2>
+          <p>Chaque miroir ou synchronisation prépare un plan avant de modifier les fichiers. Le dialogue de validation indique les racines, le sens, la liste des actions, les dossiers à créer/supprimer et les conflits laissés inchangés.</p>
+          <ul><li><strong>Files to copy (including replacements)</strong> : nombre de fichiers à copier et taille de leurs nouvelles versions, remplacements compris.</li><li><strong>Files to delete</strong> : nombre et taille des fichiers à supprimer explicitement.</li><li><strong>Existing versions to overwrite (included above)</strong> : nombre et taille des anciennes versions à écraser. Les fichiers concernés sont déjà inclus dans le groupe des copies ; n’additionnez pas ces groupes comme s’il s’agissait de fichiers distincts.</li></ul>
+          <p>Les totaux représentent des <strong>opérations</strong> : un changement de type peut produire plusieurs actions sur le même chemin. La taille des fichiers ne prédit pas exactement l’espace libre nécessaire ; la préparation d’une copie utilise un fichier temporaire dans le dossier cible.</p>
+          <p><strong>Apply mirror</strong> ou <strong>Apply synchronization</strong> autorise le plan affiché. Annuler ou fermer le dialogue ne modifie pas les données. S’il n’y a aucune action, rien n’est exécuté. Avant exécution, le plan est revérifié ; une modification imprévue peut imposer un nouveau balayage et une nouvelle validation.</p>
+        </section>
+
+        <section id="fr-progress"><h2>06 · Suivi et commandes</h2>
+          <p>La zone inférieure suit toutes les phases : balayage, comparaison, préparation, validation et exécution. Pendant le balayage, le nombre total n’est pas encore connu ; la barre peut donc être indéterminée. Le pourcentage d’exécution porte sur les actions traitées, pas sur le temps restant.</p>
+          <ul><li><strong>Copy / Delete</strong> : fichiers et tailles effectivement terminés par rapport aux valeurs prévues ; les remplacements font partie des copies.</li><li><strong>Folders</strong> : dossiers créés et supprimés, réalisés / prévus.</li><li><strong>Transferred</strong> : octets transférés, y compris les tentatives partielles ou répétées ; ce total peut dépasser la taille prévue ou les octets validés.</li><li><strong>Current file</strong> : chemin courant et progression dans le fichier pendant la copie.</li><li><strong>Problems</strong> : fichiers/dossiers en échec, opérations dépendantes ignorées, éléments déjà absents, accès indisponibles, nouvelles tentatives et nombre de fichiers distincts ayant subi une erreur de lecture.</li></ul>
+          <p>Les tailles sont formatées en unités de 1 024 octets. Après une exécution, une nouvelle comparaison actualise le tableau ; elle ne lance pas une seconde série de modifications.</p>
+          <div class="table-wrap"><table><thead><tr><th scope="col">Commande</th><th scope="col">Effet</th></tr></thead><tbody>
+            <tr><td><strong>Pause / Resume</strong></td><td>Suspend/reprend au prochain point de contrôle, y compris entre blocs de copie. Un appel Windows déjà bloqué peut retarder la prise en compte.</td></tr>
+            <tr><td><strong>Stop</strong></td><td>Demande un arrêt propre, nettoie les temporaires lorsque possible et termine le log et le rapport demandé. Les actions déjà terminées sont conservées.</td></tr>
+            <tr><td><strong>Restart</strong></td><td>Arrête et attend l’opération active si nécessaire, puis relance le même mode avec un balayage et un plan neufs. Les modifications exigent une nouvelle validation. Un nouveau log est créé.</td></tr>
+            <tr><td>Fermer la fenêtre</td><td>Demande l’arrêt et attend la finalisation avant de quitter. Ne forcez pas la fermeture du processus si vous souhaitez laisser cette finalisation s’achever.</td></tr>
+          </tbody></table></div>
+          <p>Les réglages sont verrouillés pendant une opération. <strong>Help</strong> reste accessible.</p>
+        </section>
+
+        <section id="fr-errors"><h2>07 · Erreurs et arrêts</h2>
+          <p>Un échec isolé ne doit pas nécessairement bloquer les autres fichiers. À l’inverse, une source ou une cible douteuse ne doit pas être considérée comme un dossier vide.</p>
+          <div class="table-wrap"><table><thead><tr><th scope="col">Situation</th><th scope="col">Réaction de XtraSync</th></tr></thead><tbody>
+            <tr><td>Fichier verrouillé ou erreur d’E/S transitoire isolée</td><td>Deux nouvelles tentatives, après 250 ms puis 750 ms. Si elles échouent, l’élément est journalisé en échec ; le travail indépendant continue.</td></tr>
+            <tr><td>Accès refusé, chemin invalide/trop long, dossier devenu non vide</td><td>Échec de l’élément sans nouvelle tentative ; préservation des données restantes et poursuite du travail indépendant.</td></tr>
+            <tr><td>Fichier source disparu après l’aperçu</td><td>Échec de sa copie, préservation de sa destination existante. Cette disparition ne crée pas une nouvelle suppression de miroir.</td></tr>
+            <tr><td>Cible à supprimer déjà absente</td><td>Signalée comme déjà absente ; elle n’est pas comptée comme effectivement supprimée.</td></tr>
+            <tr><td>Balayage partiel ou impossible</td><td>Périmètre marqué <strong>Unavailable</strong>. Les modifications de ce périmètre et les changements destructeurs de ses parents sont bloqués ; il n’est jamais traité comme vide.</td></tr>
+            <tr><td>Échec d’une action préalable</td><td>Les actions qui en dépendent sont ignorées : par exemple, pas de suppression du parent si un enfant n’a pas pu être supprimé.</td></tr>
+            <tr><td>Racine absente au démarrage</td><td>Arrêt avant modification des données. Les deux dossiers doivent être accessibles pour commencer.</td></tr>
+            <tr><td>Perte de source/cible ou erreur de connexion/périphérique indisponible</td><td>Suspension des écritures ; vérification toutes les deux secondes pendant un budget de 30 secondes. Arrêt si l’accès ne revient pas. Même s’il revient, un nouveau balayage et une nouvelle validation sont requis avant toute autre écriture.</td></tr>
+            <tr><td>Disque plein, stockage défectueux/protégé en écriture, CRC, corruption ou erreur grave de périphérique</td><td>Arrêt immédiat et journalisation.</td></tr>
+            <tr><td>Ajout, changement de type, taille ou date imprévu ; violation de sécurité de chemin ; erreur inattendue</td><td>Arrêt. Corrigez la cause et repartez d’un plan neuf.</td></tr>
+          </tbody></table></div>
+          <h3>Limite globale d’erreurs de lecture</h3>
+          <p><strong>I/O read-error limit</strong> est un entier strictement positif, initialement <strong>10 fichiers distincts par opération</strong>. Il compte les erreurs de lecture d’E/S non fatales, sur le contenu ou les métadonnées de fichiers connus, d’un côté ou de l’autre. Le même chemin absolu compte une seule fois, sans distinction de casse, même s’il échoue plusieurs fois ou pendant plusieurs phases.</p>
+          <p>Une lecture finalement réussie reste comptabilisée. Les succès intermédiaires et les changements de phase ne remettent pas le compteur à zéro. Dès que le seuil est atteint, l’opération s’arrête, avant une autre tentative sur ce fichier ou le traitement d’un fichier supplémentaire. La valeur utilisée et le compteur sont conservés dans le bilan ; une nouvelle opération repart à zéro.</p>
+          <p>Les fichiers manquants, permissions, verrouillages, chemins invalides et erreurs d’écriture gardent leur politique séparée et ne consomment pas ce seuil. Les erreurs graves de stockage et les pertes de connexion peuvent provoquer un arrêt plus tôt.</p>
+          <h3>Comprendre le résultat final</h3>
+          <ul><li><strong>Completed</strong> : travail terminé sans problème signalé ; une cible déjà absente ne constitue pas un échec.</li><li><strong>Completed with warnings</strong> : par exemple erreur transitoire récupérée ou avertissement de configuration. Consultez le log.</li><li><strong>Completed with issues</strong> : certains éléments ont échoué, ont été ignorés par dépendance, sont indisponibles ou en conflit. Consultez les compteurs et le log.</li><li><strong>Stopped</strong> : arrêt demandé ou problème bloquant. Les actions restantes ne sont pas annoncées comme terminées.</li></ul>
+          <p>Le délai de 30 secondes concerne la boucle de récupération entre les appels système. Windows peut bloquer un appel plus longtemps ; Pause, Stop et la fermeture de la fenêtre prennent alors effet lorsqu’il rend la main.</p>
+        </section>
+
+        <section id="fr-logs"><h2>08 · Logs et rapports HTML</h2>
+          <h3>Un log par opération, un seul précédent</h3>
+          <p>Chaque lancement de comparaison, miroir ou synchronisation crée <code>XtraSync.log</code> à côté de l’exécutable réellement lancé, y compris pour une opération annulée ou arrêtée. Au lancement suivant, l’ancien <code>XtraSync.bak.log</code> est supprimé et le log courant devient <code>XtraSync.bak.log</code>, avant la création du nouveau log. Il reste donc le log courant et, au plus, celui de l’opération précédente.</p>
+          <p>Le log contient les chemins, options et filtres, les phases, erreurs et avertissements avec leurs détails, puis un bilan final : durées, fichiers, dossiers, tailles prévues et réalisées, transferts partiels, remplacements, suppressions, conflits, échecs, nouvelles tentatives, récupérations et travail non traité. Copiez un log ailleurs avant d’enchaîner plusieurs nouvelles opérations si vous souhaitez le conserver.</p>
+          <p>Un verrou empêche deux instances utilisant le même dossier d’exécutable de faire tourner simultanément ces logs. Si le log ne peut pas être créé, l’opération ne commence pas. Un échec ultérieur d’écriture/finalisation est signalé à l’écran ; le bilan sur disque peut alors être incomplet.</p>
+          <h3>Rapport HTML facultatif</h3>
+          <p>Cochez <strong>Create HTML report after this run</strong> avant de lancer l’opération. Un rapport autonome est produit à la fin, y compris après un arrêt, une erreur ou un refus de l’aperçu lorsque la session de log a pu démarrer. Il contient le résultat, les diagnostics et les statistiques ; ce n’est pas une liste exhaustive de tous les fichiers parcourus. La case est remise à zéro après chaque opération : recochez-la pour le rapport suivant.</p>
+          <pre><code>XtraSync-YYYY-MM-DD-HH-mm-ss.html
+XtraSync-2026-11-18-14-32-09.html</code></pre>
+          <p>Le nom reprend l’heure locale de début. Les deux-points sont remplacés par des tirets, compatibles avec Windows. En cas de collision à la même seconde, un suffixe <code>-2</code>, <code>-3</code>, etc. évite tout écrasement. Les rapports restent distincts, ne sont pas fusionnés et ne sont pas supprimés par la rotation des logs. Leurs chemins apparaissent en bas de la fenêtre ; ouvrez-les dans votre navigateur. Un échec de génération est signalé et journalisé si possible.</p>
+        </section>
+
+        <section id="fr-settings"><h2>09 · Préférences et fichiers</h2>
+          <div class="table-wrap"><table><thead><tr><th scope="col">Emplacement</th><th scope="col">Contenu / conservation</th></tr></thead><tbody>
+            <tr><td><code>%LOCALAPPDATA%\XtraSync\folder-history.json</code></td><td>Historique des dix chemins de chaque côté. Les champs de chemins actuels ne sont pas automatiquement restaurés comme sélection active au démarrage.</td></tr>
+            <tr><td><code>%LOCALAPPDATA%\XtraSync\exclusions.json</code></td><td>Ligne d’exclusion courante, dix dernières lignes et préférence de suppression des exclus en miroir. Cette préférence est conservée entre les lancements ; vérifiez-la avant un miroir.</td></tr>
+            <tr><td>À côté de <code>XtraSync.exe</code></td><td><code>XtraSync.log</code>, éventuel <code>XtraSync.bak.log</code>, rapports HTML datés et <code>XtraSync-help.html</code>. Le verrou temporaire <code>XtraSync.run.lock</code> est normalement supprimé à la fin de la session.</td></tr>
+          </tbody></table></div>
+          <p>Les critères de comparaison, la tolérance et la limite d’erreurs sont conservés pour les opérations suivantes de la session, puis reviennent à leurs valeurs initiales au prochain démarrage de l’application. La demande de rapport HTML s’applique à une seule opération. En cas de problème de sauvegarde des préférences, un message est affiché ; pendant une opération, un avertissement est également journalisé.</p>
+          <p>Pour réinitialiser les historiques et les exclusions, fermez l’application puis supprimez les deux fichiers de préférences ci-dessus. Des préférences absentes ou illisibles entraînent un retour aux valeurs initiales correspondantes.</p>
+        </section>
+
+        <section id="fr-limits"><h2>10 · Périmètre et protections</h2>
+          <ul><li>Application Windows autonome, pour deux chemins de dossiers accessibles par Windows. Les partages réseau restent soumis aux autorisations et à la disponibilité de la connexion.</li><li>Les racines identiques ou imbriquées sont refusées. Les liens symboliques, jonctions et autres points de réanalyse ne sont pas suivis ; leur détection provoque un arrêt de sécurité.</li><li>Les copies passent par un fichier temporaire voisin de la destination. La source et la cible sont revérifiées avant le remplacement final. Une conversion dossier vers fichier prépare d’abord la copie source avant de supprimer le sous-arbre cible.</li><li>Les actions approuvées ne sont pas élargies après validation. Un balayage incomplet ne justifie jamais de nouvelles suppressions.</li><li>Les logs, rapports et fichier d’aide générés à côté de l’exécutable sont ignorés par la synchronisation dans ce répertoire précis. Leurs dossiers parents sont protégés des suppressions destructrices. Les temporaires réservés <code>.xtrasync-&lt;32 caractères hexadécimaux&gt;.tmp</code> sont également ignorés ; un échec de nettoyage est signalé.</li></ul>
+          <div class="callout warning"><p><strong>Pas de retour arrière global.</strong> Les copies terminées et suppressions validées restent effectives si une opération ultérieure échoue. La comparaison ne certifie pas l’intégrité du disque et XtraSync ne fournit pas d’historique de versions. Les contrôles ne peuvent pas empêcher toutes les modifications externes entre une vérification et un appel système.</p></div>
+        </section>
+
+        <section id="fr-trouble"><h2>11 · Résoudre un problème</h2>
+          <div class="table-wrap"><table><thead><tr><th scope="col">Question</th><th scope="col">À vérifier</th></tr></thead><tbody>
+            <tr><td>Un fichier n’apparaît pas</td><td>Vérifiez Exclusions, les filtres de dossiers, Subfolders included et les zones Unavailable. Les fichiers propres à XtraSync sont volontairement protégés dans son dossier de sortie.</td></tr>
+            <tr><td>Un fichier supprimé revient en bidirectionnel</td><td>C’est le fonctionnement prévu : les fichiers présents d’un seul côté sont recopiés. Utilisez le miroir dans le bon sens si la source doit imposer ses suppressions.</td></tr>
+            <tr><td>Un fichier cible exclu reste présent</td><td>Par défaut il est préservé. Pour le supprimer en miroir, cochez Delete excluded items from mirror destination et validez le nouveau plan. Cette option ne s’applique pas en bidirectionnel.</td></tr>
+            <tr><td>« Equal » mais contenu différent</td><td>La comparaison utilise taille/date, pas le contenu. Vérifiez vos critères et la tolérance ; l’option horaire peut aussi masquer un écart de dates.</td></tr>
+            <tr><td>La connexion est revenue mais l’opération s’est arrêtée</td><td>Relancez pour obtenir un état et un aperçu neufs. XtraSync ne reprend pas automatiquement un ancien plan après une perte de racine.</td></tr>
+            <tr><td>Arrêt sur la limite d’erreurs de lecture</td><td>Lisez les chemins et exceptions dans le log. Vérifiez le support et la connexion avant de relancer. Quelques réussites intermédiaires ne suffisent pas à annuler les erreurs cumulées.</td></tr>
+            <tr><td>Impossible de créer le log, le rapport ou l’aide</td><td>Vérifiez les droits d’écriture et l’espace libre à côté de l’exécutable, les fichiers verrouillés et les autres instances actives. Déplacez l’application dans un dossier où vous pouvez écrire si nécessaire.</td></tr>
+          </tbody></table></div>
+        </section>
+
+        <section id="fr-help"><h2>12 · Cette aide suit l’exécutable</h2>
+          <p>Le bouton <strong>Help</strong> recrée <code>XtraSync-help.html</code> à côté de <code>XtraSync.exe</code> à partir de la documentation intégrée, <strong>à chaque clic, même si le fichier existe déjà et est identique</strong>, puis l’ouvre dans le navigateur par défaut. Les deux langues et tous les styles sont inclus dans ce seul fichier, sans téléchargement. Toute modification manuelle de la copie générée est remplacée au clic suivant.</p>
+          <p>Si l’écriture ou l’ouverture échoue, un message apparaît sous le titre de l’application, sans interrompre l’opération en cours. Si seule l’ouverture échoue, le fichier peut déjà avoir été recréé ; ouvrez-le manuellement. Si un onglet existant affiche encore une ancienne version, rechargez-le.</p>
+          <p class="small">Documentation de référence du projet : <code>docs/XtraSync-help.html</code>. Mise à jour : 18 novembre 2026.</p>
+        </section>
+        <footer>XtraSync · Guide utilisateur FR · Documentation embarquée, disponible hors connexion.</footer>
+      </article>
+
+      <article data-lang="en" lang="en" aria-labelledby="en-title">
+        <div class="eyebrow">User guide · English</div>
+        <h1 id="en-title">Compare, understand,<br>synchronize.</h1>
+        <p class="lead">A practical guide to comparing two folders, making a mirror and synchronizing both ways with XtraSync.</p>
+        <p>Button names match the English application interface. This guide works offline. Use the contents, <kbd>Ctrl</kbd> + <kbd>F</kbd> to search and <kbd>Ctrl</kbd> + <kbd>P</kbd> to print the displayed language.</p>
+        <div class="callout warning"><p><strong>A mirror can delete data.</strong> Check the direction and review the summary before applying changes. Deletions are permanent, bypassing the Recycle Bin, and XtraSync does not archive overwritten versions. Interrupting a run does not undo changes that have already completed.</p></div>
+
+        <section id="en-start"><h2>01 · Getting started</h2>
+          <ol>
+            <li>Run <code>XtraSync.exe</code> from a location you can write to: the application places its logs, reports and help there.</li>
+            <li>Enter <strong>LEFT FOLDER</strong> and <strong>RIGHT FOLDER</strong>, or select them with <strong>Browse…</strong>. Both folders must already exist, be accessible and be separate; neither may contain the other.</li>
+            <li>Choose your comparison criteria and exclusions. By default, subfolders, sizes and timestamps are included, with a two-second tolerance.</li>
+            <li>Start with <strong>Compare folders</strong> to inspect differences. It does not change folder data, although it creates an operation log and an optional report.</li>
+            <li>Choose a mirror direction or two-way synchronization. Review the exact actions, counts and sizes, then confirm with <strong>Apply mirror</strong> or <strong>Apply synchronization</strong>.</li>
+            <li>Read the final result. If there are issues or warnings, check <code>XtraSync.log</code>; its path appears at the bottom of the window.</li>
+          </ol>
+          <p>The folder drop-downs separately retain the ten most recent left and right paths, without duplicates. Selecting a history entry does not start an operation.</p>
+        </section>
+
+        <section id="en-modes"><h2>02 · Choosing a mode</h2>
+          <div class="table-wrap"><table><caption class="small">What the four main commands do</caption><thead><tr><th scope="col">Command</th><th scope="col">Behavior</th></tr></thead><tbody>
+            <tr><td><strong>Compare folders</strong></td><td>Scans both sides and lists differences without copying or deleting folder data.</td></tr>
+            <tr><td><strong>Mirror to right →</strong></td><td>Left is the source and right is the destination. Copies missing or different items from left to right; deletes destination items absent from the source within the selected scope.</td></tr>
+            <tr><td><strong>← Mirror to left</strong></td><td>Right is the source and left is the destination. The same rules apply in reverse.</td></tr>
+            <tr><td><strong>Synchronize Both Way</strong></td><td>Copies items present on only one side to the other, and replaces an older version with a newer version when the rules can identify one. Deletions are never propagated.</td></tr>
+          </tbody></table></div>
+          <p><strong>In a mirror, the source is authoritative:</strong> a different destination file can be overwritten even if it is newer. A file/folder type conflict may require deleting the old destination item and recreating it using the source type; those actions appear in the review.</p>
+          <p><strong>Two-way synchronization does not remember deletions:</strong> deleting a file on one side while leaving it on the other causes it to be copied back. File/folder conflicts and differences without an identifiable newer version remain unchanged and appear in the preview. Resolve them manually, then run again.</p>
+        </section>
+
+        <section id="en-rules"><h2>03 · Comparison rules</h2>
+          <p>XtraSync compares file <strong>metadata</strong>: size and modification timestamp. It does not calculate hashes or compare contents byte by byte. Files with the same size and timestamp can therefore be reported equal even when their contents differ.</p>
+          <div class="table-wrap"><table><thead><tr><th scope="col">Option</th><th scope="col">Effect</th></tr></thead><tbody>
+            <tr><td><strong>Subfolders included</strong></td><td>On by default. Includes subfolders and their contents. When off, only files directly in the roots are processed: subfolders and their contents are neither copied nor deleted.</td></tr>
+            <tr><td><strong>Compare sizes</strong></td><td>On by default. Different sizes indicate a difference when timestamps have not already identified a newer version.</td></tr>
+            <tr><td><strong>Compare timestamps</strong></td><td>On by default. Identifies the newer version and guides two-way copies.</td></tr>
+            <tr><td><strong>Tolerance (seconds)</strong></td><td>A non-negative whole number, initially 2. Timestamp differences at or below the tolerance are equivalent. Timestamps are compared at whole-second precision.</td></tr>
+            <tr><td><strong>Ignore whole-hour time zone differences</strong></td><td>Off by default. Treats differences close to whole hours as equivalent within the chosen tolerance, for gaps under 24 hours. Use only when a time zone offset actually explains the difference.</td></tr>
+          </tbody></table></div>
+          <p>If both criteria are off, two files at the same relative path are considered equal regardless of their contents. If timestamps are disabled or equivalent but sizes differ, two-way synchronization reports a conflict instead of choosing a version arbitrarily.</p>
+          <h3>Reading the results table</h3>
+          <p>Paths are relative to the selected roots; displayed timestamps use local time. <strong>Equal</strong> means equal under your criteria, <strong>Left only</strong> / <strong>Right only</strong> present on one side, <strong>Left newer</strong> / <strong>Right newer</strong> newer on that side, <strong>Different size</strong> unequal sizes, <strong>Folder</strong> a folder on both sides, <strong>Type conflict</strong> a file on one side and folder on the other, and <strong>Unavailable</strong> insufficient access to reach a conclusion.</p>
+        </section>
+
+        <section id="en-filters"><h2>04 · Exclusions and filters</h2>
+          <div class="callout"><p><strong>Filtering happens upstream, during scanning.</strong> Excluded files are not opened for content reads or compared; excluded folders are not traversed. Their names and, when necessary, entry types are still inspected to apply the filter.</p></div>
+          <h3>Entering the main exclusion line</h3>
+          <p><strong>Exclusions</strong> is an editable drop-down. Separate patterns with semicolons:</p>
+          <pre><code>*.tmp; .git; file:*.bak; folder:bin; folder:obj; file:cache/*.log</code></pre>
+          <ul><li>A bare pattern matches files <em>and</em> folders.</li><li><code>file:</code> restricts a pattern to files; <code>folder:</code> restricts it to folders.</li><li>The current line is saved automatically, including manual edits and clearing it. The ten most recent completed nonempty lines are retained without duplicates. Press Enter or leave the field to remember a complete line; reusing a line moves it to the top.</li></ul>
+          <h3>The Filters… dialog</h3>
+          <p>The filter-icon button opens <strong>Name filters</strong>. On entry, the main line is split into <strong>Exclude files and folders</strong>, <strong>Exclude files</strong> and <strong>Exclude folders</strong>. Enter <strong>one pattern per line, without semicolons</strong>. Do not add <code>file:</code> / <code>folder:</code> prefixes inside the dedicated fields.</p>
+          <p><strong>Save filters</strong> rebuilds and saves the main line with its separators and prefixes. <strong>Cancel</strong> discards dialog edits. <strong>Clear filters</strong> clears the draft; use Save filters afterwards to apply that change.</p>
+          <h3>Pattern syntax</h3>
+          <div class="table-wrap"><table><thead><tr><th scope="col">Pattern</th><th scope="col">Matches</th></tr></thead><tbody>
+            <tr><td><code>*.tmp</code></td><td>Names ending in <code>.tmp</code>, at any depth.</td></tr>
+            <tr><td><code>photo?.jpg</code></td><td>Exactly one character for <code>?</code>, such as <code>photo1.jpg</code>.</td></tr>
+            <tr><td><code>folder:cache</code></td><td>Every folder named <code>cache</code>, including all its contents.</td></tr>
+            <tr><td><code>file:cache/*.log</code></td><td><code>.log</code> files directly inside root-level <code>cache</code>; does not match <code>other/cache/a.log</code> or <code>cache/sub/a.log</code>.</td></tr>
+          </tbody></table></div>
+          <p><code>*</code> matches zero or more characters and <code>?</code> one character, without crossing folder separators. A pattern without a separator matches a name at any depth; with <code>/</code> or <code>\</code>, it matches a path relative to the root. Matching ignores case. Leading/trailing spaces are trimmed; internal spaces and commas are literal. There is no include syntax, no <code>!</code> exception and no special recursive meaning for <code>**</code>. Semicolons are reserved as pattern separators.</p>
+          <h3>What happens to matching destination items?</h3>
+          <p><strong>Mirrors:</strong> excluded items are absent from the logical source. By default, matching destination items are preserved; their containing folders are protected against destructive deletion or type replacement.</p>
+          <p>The main-screen option <strong>Delete excluded items from mirror destination</strong>, initially off, allows their deletion in the mirror destination. Those deletions are included in the review. The destination changes with the selected mirror direction. To plan this cleanup, the destination must be inspected, including its excluded items; the source still uses upstream filtering.</p>
+          <p><strong>Two-way synchronization:</strong> excluded items are simply ignored on both sides, without copying or deleting them. Excluded-item deletion is never applied in this mode, even when the option remains checked; a warning is logged in that case.</p>
+        </section>
+
+        <section id="en-review"><h2>05 · Reviewing changes</h2>
+          <p>Every mirror or synchronization builds a plan before modifying files. The confirmation dialog shows roots, direction, individual actions, folders to create/delete and conflicts left unchanged.</p>
+          <ul><li><strong>Files to copy (including replacements)</strong>: file count and size of new versions to copy, including replacements.</li><li><strong>Files to delete</strong>: count and size of files scheduled for explicit deletion.</li><li><strong>Existing versions to overwrite (included above)</strong>: count and size of old versions to overwrite. These files are already included in the copy group; do not add the groups as if they represented distinct files.</li></ul>
+          <p>Totals describe <strong>operations</strong>: a type change may involve several actions on the same path. File sizes do not precisely predict required free space; preparing a copy uses a temporary file in the destination directory.</p>
+          <p><strong>Apply mirror</strong> or <strong>Apply synchronization</strong> authorizes the displayed plan. Cancelling or closing the dialog does not change folder data. With no actions, nothing is executed. The plan is revalidated before execution; unexpected changes may require another scan and review.</p>
+        </section>
+
+        <section id="en-progress"><h2>06 · Progress and controls</h2>
+          <p>The lower panel tracks scanning, comparison, planning, review and execution. Scanning has no known total yet, so the bar may be indeterminate. Execution percentage measures processed actions, rather than time remaining.</p>
+          <ul><li><strong>Copy / Delete</strong>: completed file counts and sizes against planned values; replacements are included in copies.</li><li><strong>Folders</strong>: folders created and deleted, completed / planned.</li><li><strong>Transferred</strong>: bytes transferred, including partial or repeated attempts; this can exceed the planned payload or committed bytes.</li><li><strong>Current file</strong>: current path and within-file copy progress.</li><li><strong>Problems</strong>: failed files/folders, skipped dependent work, already-absent items, unavailable entries, retries and distinct files with read errors.</li></ul>
+          <p>Formatted sizes use units of 1,024 bytes. After execution, a fresh comparison updates the table; it does not start another round of changes.</p>
+          <div class="table-wrap"><table><thead><tr><th scope="col">Control</th><th scope="col">Effect</th></tr></thead><tbody>
+            <tr><td><strong>Pause / Resume</strong></td><td>Pauses/resumes at the next checkpoint, including between copy blocks. An already-blocked Windows call can delay this.</td></tr>
+            <tr><td><strong>Stop</strong></td><td>Requests a clean stop, cleans temporary files where possible and finalizes the log and requested report. Completed actions remain in place.</td></tr>
+            <tr><td><strong>Restart</strong></td><td>Stops and waits for an active run if needed, then repeats the same mode with a fresh scan and plan. Changes require another confirmation. A new log is created.</td></tr>
+            <tr><td>Closing the window</td><td>Requests a stop and waits for finalization before exiting. Avoid force-closing the process if you want that finalization to finish.</td></tr>
+          </tbody></table></div>
+          <p>Settings are locked during a run. <strong>Help</strong> remains available.</p>
+        </section>
+
+        <section id="en-errors"><h2>07 · Errors and stopping</h2>
+          <p>An isolated failure need not block other files. An unreliable source or destination, however, must never be treated as an empty folder.</p>
+          <div class="table-wrap"><table><thead><tr><th scope="col">Situation</th><th scope="col">XtraSync response</th></tr></thead><tbody>
+            <tr><td>Locked file or isolated transient I/O failure</td><td>Two retries, after 250 ms and 750 ms. If they fail, records the item as failed and continues independent work.</td></tr>
+            <tr><td>Access denied, invalid/too-long path, directory that became nonempty</td><td>Records an item failure without retrying, preserves remaining data and continues independent work.</td></tr>
+            <tr><td>Source file disappeared after preview</td><td>Fails its copy and preserves its existing destination. The disappearance does not create a new mirror deletion.</td></tr>
+            <tr><td>Deletion target is already absent</td><td>Records it as already absent; does not count it as an actual deletion.</td></tr>
+            <tr><td>Partial or failed scan</td><td>Marks the scope <strong>Unavailable</strong>. Blocks changes within it and destructive changes to its ancestors; never treats it as empty.</td></tr>
+            <tr><td>A prerequisite action failed</td><td>Skips dependent actions: for example, cannot remove a parent if a child deletion failed.</td></tr>
+            <tr><td>A root is missing at startup</td><td>Stops before changing folder data. Both roots must be accessible to begin.</td></tr>
+            <tr><td>Lost source/destination or transport/device-unavailable error</td><td>Suspends writes; checks every two seconds with a 30-second recovery budget. Stops if access stays unavailable. Even if access returns, requires a fresh scan and review before any further writes.</td></tr>
+            <tr><td>Disk full, faulty/write-protected storage, CRC, corruption or serious device I/O error</td><td>Stops immediately and logs the failure.</td></tr>
+            <tr><td>Unexpected addition, type, size or timestamp change; unsafe path; unexpected error</td><td>Stops. Correct the cause and start with a fresh plan.</td></tr>
+          </tbody></table></div>
+          <h3>Cumulative read-error limit</h3>
+          <p><strong>I/O read-error limit</strong> is a positive whole number, initially <strong>10 distinct files per run</strong>. It counts nonfatal I/O read failures in file contents or known file metadata, on either side. The same absolute path counts once, ignoring case, even if it fails repeatedly or in several phases.</p>
+          <p>A read that eventually succeeds still counts. Successful intervening reads and phase changes never reset the counter. Reaching the limit stops the run before another attempt on that file or any additional file starts. The used limit and counter remain in the summary; a new run starts at zero.</p>
+          <p>Missing files, permissions, locks, invalid paths and write errors retain their separate policies and do not consume this budget. Serious storage faults and connection loss can stop the run earlier.</p>
+          <h3>Understanding the final result</h3>
+          <ul><li><strong>Completed</strong>: work finished without reported problems; an already-absent deletion target is not a failure.</li><li><strong>Completed with warnings</strong>: for example, a recovered transient failure or configuration warning. Check the log.</li><li><strong>Completed with issues</strong>: some items failed, were skipped by dependency, remained unavailable or conflicted. Check the counters and log.</li><li><strong>Stopped</strong>: a requested stop or blocking failure interrupted the run. Remaining work is not reported as completed.</li></ul>
+          <p>The 30-second budget applies to the recovery loop between system calls. Windows can block a call longer; Pause, Stop and window closing then take effect after it returns.</p>
+        </section>
+
+        <section id="en-logs"><h2>08 · Logs and HTML reports</h2>
+          <h3>One log per run, one previous log</h3>
+          <p>Every comparison, mirror or synchronization attempt creates <code>XtraSync.log</code> beside the executable actually launched, including cancelled or stopped runs. At the next run, the old <code>XtraSync.bak.log</code> is deleted and the current log becomes <code>XtraSync.bak.log</code>, before creating the new current log. Only the current log and, at most, the previous run’s log remain.</p>
+          <p>The log records paths, settings and filters, phases, errors and warnings with details, then a final summary: duration, file and folder counts, planned and completed bytes, partial transfers, replacements, deletions, conflicts, failures, retries, recoveries and unprocessed work. Copy a log elsewhere before starting several more runs if you want to keep it.</p>
+          <p>A lock prevents instances sharing an executable directory from rotating these logs concurrently. If the log cannot be created, the operation does not start. A later write/finalization failure is reported on screen; the on-disk summary may then be incomplete.</p>
+          <h3>Optional HTML report</h3>
+          <p>Check <strong>Create HTML report after this run</strong> before starting. A self-contained report is produced at the end, including after a stop, failure or declined preview when a log session could start. It contains the outcome, diagnostics and statistics; it is not an exhaustive inventory of every scanned file. The checkbox resets after each run: select it again for the next report.</p>
+          <pre><code>XtraSync-YYYY-MM-DD-HH-mm-ss.html
+XtraSync-2026-11-18-14-32-09.html</code></pre>
+          <p>The filename uses local start time. Hyphens replace colons for Windows compatibility. If two reports have the same second, suffixes such as <code>-2</code>, <code>-3</code> prevent overwriting. Reports remain separate, are not merged and are not removed by log rotation. Their paths appear at the bottom of the window; open them in your browser. Report-generation failures are shown and logged where possible.</p>
+        </section>
+
+        <section id="en-settings"><h2>09 · Preferences and files</h2>
+          <div class="table-wrap"><table><thead><tr><th scope="col">Location</th><th scope="col">Contents / retention</th></tr></thead><tbody>
+            <tr><td><code>%LOCALAPPDATA%\XtraSync\folder-history.json</code></td><td>Ten recent paths per side. Current path fields are not automatically restored as active selections on application startup.</td></tr>
+            <tr><td><code>%LOCALAPPDATA%\XtraSync\exclusions.json</code></td><td>Current exclusion line, ten recent lines and mirror excluded-item deletion preference. This preference survives application restarts; check it before mirroring.</td></tr>
+            <tr><td>Beside <code>XtraSync.exe</code></td><td><code>XtraSync.log</code>, optional <code>XtraSync.bak.log</code>, timestamped HTML reports and <code>XtraSync-help.html</code>. The temporary <code>XtraSync.run.lock</code> is normally removed when the session closes.</td></tr>
+          </tbody></table></div>
+          <p>Comparison criteria, tolerance and read-error limit remain selected for later runs in the current session, then return to initial values at the next application startup. The HTML report request lasts for one run. Preference-save failures are displayed; during an operation, they also generate a log warning.</p>
+          <p>To reset histories and exclusions, close the application and delete the two preference files above. Missing or unreadable preferences fall back to their corresponding initial values.</p>
+        </section>
+
+        <section id="en-limits"><h2>10 · Scope and protections</h2>
+          <ul><li>A self-contained Windows application for two folder paths accessible through Windows. Network shares remain subject to permissions and connection availability.</li><li>Identical or nested roots are rejected. Symbolic links, junctions and other reparse points are not followed; detecting them triggers a safety stop.</li><li>Copies use a temporary sibling of the destination. Source and destination are checked again before final replacement. Replacing a destination folder with a file prepares the source copy before deleting the target subtree.</li><li>The approved action list is never expanded after confirmation. An incomplete scan never authorizes new deletions.</li><li>Logs, reports and the generated help file beside the executable are ignored by synchronization in that specific directory. Their containing folders are protected from destructive deletion. Reserved <code>.xtrasync-&lt;32 hexadecimal characters&gt;.tmp</code> files are also ignored; cleanup failures are reported.</li></ul>
+          <div class="callout warning"><p><strong>No global rollback.</strong> Completed copies and approved deletions remain in effect when a later action fails. Comparison does not certify disk integrity and XtraSync does not provide version history. Checks cannot prevent every external change between verification and a system call.</p></div>
+        </section>
+
+        <section id="en-trouble"><h2>11 · Troubleshooting</h2>
+          <div class="table-wrap"><table><thead><tr><th scope="col">Question</th><th scope="col">Check</th></tr></thead><tbody>
+            <tr><td>A file is missing from the list</td><td>Check Exclusions, folder filters, Subfolders included and Unavailable scopes. XtraSync’s own output files are intentionally protected in its output directory.</td></tr>
+            <tr><td>A deleted file returns in two-way mode</td><td>This is expected: items on one side are copied to the other. Choose the appropriate mirror direction if the source must impose its deletions.</td></tr>
+            <tr><td>An excluded destination file remains</td><td>It is preserved by default. To delete it in a mirror, select Delete excluded items from mirror destination and review the new plan. This option never applies in two-way mode.</td></tr>
+            <tr><td>“Equal” but different contents</td><td>Comparison uses size/timestamp rather than content. Check your criteria and tolerance; the whole-hour option can also hide a timestamp difference.</td></tr>
+            <tr><td>Connection returned, but the run stopped</td><td>Run again for a fresh state and preview. XtraSync does not automatically resume an old plan after losing root access.</td></tr>
+            <tr><td>Read-error limit reached</td><td>Read the paths and exceptions in the log. Check storage and connection health before restarting. Successful intervening reads do not cancel cumulative failures.</td></tr>
+            <tr><td>Cannot create the log, report or help</td><td>Check write permissions and free space beside the executable, locked files and other active instances. Move the application to a writable folder if needed.</td></tr>
+          </tbody></table></div>
+        </section>
+
+        <section id="en-help"><h2>12 · Help travels with the executable</h2>
+          <p>The <strong>Help</strong> button recreates <code>XtraSync-help.html</code> beside <code>XtraSync.exe</code> from the embedded documentation <strong>on every click, even when the existing file is identical</strong>, then opens it in the default browser. Both languages and all styles are included in this single file, with no downloads. Manual edits to the generated copy are replaced on the next click.</p>
+          <p>If writing or opening fails, a message appears under the application title without interrupting the current operation. If only opening fails, the file may already have been recreated; open it manually. If an existing browser tab still shows an old version, reload it.</p>
+          <p class="small">Project documentation source: <code>docs/XtraSync-help.html</code>. Updated: 18 November 2026.</p>
+        </section>
+        <footer>XtraSync · EN user guide · Embedded documentation, available offline.</footer>
+      </article>
+    </main>
+  </div>
+  <script>
+    (() => {
+      const controls = document.querySelector('.language-controls');
+      const buttons = [...controls.querySelectorAll('button')];
+      const blocks = [...document.querySelectorAll('[data-lang]')];
+      function showLanguage(language) {
+        blocks.forEach(block => { block.hidden = block.dataset.lang !== language; });
+        buttons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.language === language)));
+        document.documentElement.lang = language;
+        document.title = language === 'fr' ? 'XtraSync · Guide utilisateur' : 'XtraSync · User guide';
+      }
+      function hashLanguage() { return /^#(fr|en)-/.exec(location.hash)?.[1]; }
+      controls.hidden = false;
+      showLanguage(hashLanguage() || (navigator.language.toLowerCase().startsWith('fr') ? 'fr' : 'en'));
+      buttons.forEach(button => button.addEventListener('click', () => {
+        const language = button.dataset.language;
+        const section = /^#(?:fr|en)-(.*)$/.exec(location.hash)?.[1] || 'title';
+        showLanguage(language);
+        location.hash = language + '-' + section;
+      }));
+      window.addEventListener('hashchange', () => {
+        const language = hashLanguage();
+        if (language) showLanguage(language);
+      });
+    })();
+  </script>
+</body>
+</html>

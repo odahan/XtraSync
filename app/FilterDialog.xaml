@@ -1,0 +1,105 @@
+<Window x:Class="XtraSync.FilterDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Name filters" Width="860" Height="760" MinWidth="660" MinHeight="600"
+        Style="{StaticResource {x:Type Window}}" WindowStartupLocation="CenterOwner">
+  <Window.Resources>
+    <Style TargetType="ScrollBar">
+      <Setter Property="Width" Value="12"/>
+      <Setter Property="Background" Value="#242831"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="ScrollBar">
+            <Border Background="{TemplateBinding Background}" CornerRadius="4">
+              <Track x:Name="PART_Track" Orientation="{TemplateBinding Orientation}" IsDirectionReversed="True"
+                     Minimum="{TemplateBinding Minimum}" Maximum="{TemplateBinding Maximum}"
+                     Value="{TemplateBinding Value}" ViewportSize="{TemplateBinding ViewportSize}">
+                <Track.DecreaseRepeatButton>
+                  <RepeatButton x:Name="Decrease" Command="ScrollBar.PageUpCommand" Focusable="False">
+                    <RepeatButton.Template><ControlTemplate TargetType="RepeatButton"><Border Background="Transparent"/></ControlTemplate></RepeatButton.Template>
+                  </RepeatButton>
+                </Track.DecreaseRepeatButton>
+                <Track.Thumb>
+                  <Thumb>
+                    <Thumb.Template><ControlTemplate TargetType="Thumb"><Border Background="#46546B" CornerRadius="4" Margin="2"/></ControlTemplate></Thumb.Template>
+                  </Thumb>
+                </Track.Thumb>
+                <Track.IncreaseRepeatButton>
+                  <RepeatButton x:Name="Increase" Command="ScrollBar.PageDownCommand" Focusable="False">
+                    <RepeatButton.Template><ControlTemplate TargetType="RepeatButton"><Border Background="Transparent"/></ControlTemplate></RepeatButton.Template>
+                  </RepeatButton>
+                </Track.IncreaseRepeatButton>
+              </Track>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="Orientation" Value="Horizontal">
+                <Setter TargetName="PART_Track" Property="IsDirectionReversed" Value="False"/>
+                <Setter TargetName="Decrease" Property="Command" Value="ScrollBar.PageLeftCommand"/>
+                <Setter TargetName="Increase" Property="Command" Value="ScrollBar.PageRightCommand"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+      <Style.Triggers>
+        <Trigger Property="Orientation" Value="Horizontal">
+          <Setter Property="Width" Value="Auto"/>
+          <Setter Property="Height" Value="12"/>
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+  </Window.Resources>
+  <DockPanel Margin="24">
+    <Grid DockPanel.Dock="Bottom" Margin="0,18,0,0">
+      <Button Content="Clear filters" Command="{Binding ClearCommand}" HorizontalAlignment="Left"/>
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+        <Button Content="Cancel" IsCancel="True"/>
+        <Button Content="Save filters" IsDefault="True" Click="SaveFilters" Background="#265C98" Margin="0"/>
+      </StackPanel>
+    </Grid>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,12,0">
+      <StackPanel>
+        <TextBlock Text="Name filters" FontSize="24" FontWeight="SemiBold"/>
+        <TextBlock Text="Choose what belongs in your synchronization source." Foreground="#90A1B8" Margin="0,6,0,18" TextWrapping="Wrap"/>
+        <Border Background="{StaticResource PanelBrush}" CornerRadius="5" Padding="16" Margin="0,0,0,16">
+          <StackPanel>
+            <TextBlock Text="How filtering works" FontWeight="SemiBold" Margin="0,0,0,8"/>
+            <TextBlock TextWrapping="Wrap" Foreground="#B7C5DA"
+                       Text="Filters run upstream, while scanning. Excluded files are not opened or compared; excluded folders are not traversed. Their names and, when needed, entry types are inspected to match the patterns."/>
+            <TextBlock TextWrapping="Wrap" Foreground="#B7C5DA" Margin="0,8,0,0"
+                       Text="Mirrors: excluded source items act as if they do not exist. Matching target items are preserved unless destination cleanup is enabled on the main screen.&#10;Both ways: excluded items are simply ignored on both sides. They are never copied or deleted."/>
+          </StackPanel>
+        </Border>
+        <TextBlock Text="Exclude files and folders" FontWeight="SemiBold" Margin="0,0,0,6"/>
+        <TextBlock Text="One item per line. Examples: *.tmp or .git or cache/*.log"
+                   Foreground="#90A1B8" FontSize="12" TextWrapping="Wrap" Margin="0,0,0,8"/>
+        <TextBox Text="{Binding CommonPatterns, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True"
+                 Height="64" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                 VerticalContentAlignment="Top" AutomationProperties.Name="Exclude files and folders"/>
+        <Grid Margin="0,16,0,16">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="16"/>
+            <ColumnDefinition Width="*"/>
+          </Grid.ColumnDefinitions>
+          <StackPanel>
+            <TextBlock Text="Exclude files" FontWeight="SemiBold" Margin="0,0,0,6"/>
+            <TextBlock Text="One item per line: *.bak or desktop.ini" Foreground="#90A1B8" FontSize="12" Margin="0,0,0,8"/>
+            <TextBox Text="{Binding FilePatterns, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True"
+                     Height="108" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                     VerticalContentAlignment="Top" AutomationProperties.Name="Exclude files"/>
+          </StackPanel>
+          <StackPanel Grid.Column="2">
+            <TextBlock Text="Exclude folders" FontWeight="SemiBold" Margin="0,0,0,6"/>
+            <TextBlock Text="One item per line: bin or obj or node_modules" Foreground="#90A1B8" FontSize="12" Margin="0,0,0,8"/>
+            <TextBox Text="{Binding FolderPatterns, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True"
+                     Height="108" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                     VerticalContentAlignment="Top" AutomationProperties.Name="Exclude folders"/>
+          </StackPanel>
+        </Grid>
+        <TextBlock TextWrapping="Wrap" Foreground="#90A1B8" FontSize="12" Margin="0,0,0,16"
+                   Text="Enter one pattern per line, without semicolons. Save filters rebuilds the main exclusion line with semicolons and file:/folder: prefixes. * matches any number of characters; ? matches one. Wildcards do not cross folder separators. Names match at any depth; paths are relative to the selected root. Matching ignores case. Spaces and commas are literal; surrounding spaces are ignored."/>
+      </StackPanel>
+    </ScrollViewer>
+  </DockPanel>
+</Window>

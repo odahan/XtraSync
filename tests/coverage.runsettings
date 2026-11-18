@@ -1,0 +1,17 @@
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat Code Coverage">
+        <Configuration>
+          <Format>cobertura</Format>
+          <Include>[XtraSync]*</Include>
+          <Exclude>[XtraSync]XtraSync.App,[XtraSync]XtraSync.MainWindow,[XtraSync]XtraSync.FilterDialog,[XtraSync]XtraSync.ReviewDialog,[XtraSync]XtraSync.DarkChrome,[XtraSync]XtraSync.ScreenshotCapture*</Exclude>
+          <ExcludeByAttribute>GeneratedCodeAttribute</ExcludeByAttribute>
+          <ExcludeByFile>**/obj/**/*.cs</ExcludeByFile>
+          <SingleHit>false</SingleHit>
+          <UseSourceLink>false</UseSourceLink>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>
