@@ -229,6 +229,7 @@ public sealed class OperationStatisticsTests : TestWorkspace
         Write(Left, "copy", "12345");
         Write(Right, "delete", "123");
         var model = CreateViewModel();
+        model.CompareAfterMirroring = true;
         model.ConfirmMirror = plan =>
         {
             Assert.Equal(OperationStatistics.FromPlan(plan), model.PlannedStatistics);

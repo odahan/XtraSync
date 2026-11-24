@@ -226,7 +226,7 @@ public sealed class RunLoggingIntegrationTests : TestWorkspace
             { LeftPath = Left, RightPath = Right, Exclusions = "*.tmp" };
         await model.CompareCommand.ExecuteAsync(null);
         string log = File.ReadAllText(Log);
-        Assert.Contains("[WARNING] Exclusions could not be saved:", log);
+        Assert.Contains("[WARNING] Preferences could not be saved:", log);
         Assert.Contains("[WARNING] Folder history could not be saved:", log);
         Assert.Contains("=== END RUN SUMMARY ===", log);
     }

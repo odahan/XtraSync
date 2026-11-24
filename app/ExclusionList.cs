@@ -4,12 +4,13 @@ using System.Text.RegularExpressions;
 
 namespace XtraSync;
 
-/// <summary>Stores exclusion patterns and matches names or relative paths on both sides.</summary>
+/// <summary>Stores exclusion patterns and mirror preferences, and matches names or relative paths on both sides.</summary>
 public sealed class ExclusionList
 {
     private readonly string filePath;
     public string Line { get; private set; } = "";
     public List<string> History { get; private set; } = [];
+    public bool CompareAfterMirroring { get; private set; }
 
     public ExclusionList(string? filePath = null)
     {
@@ -24,6 +25,7 @@ public sealed class ExclusionList
     /// <summary>Restores typed filters, including the legacy JSON string format.</summary>
     public FilterSettings LoadSettings()
     {
+        CompareAfterMirroring = false;
         try
         {
             using var document = JsonDocument.Parse(File.ReadAllText(filePath));
@@ -39,6 +41,8 @@ public sealed class ExclusionList
                 Line = line.GetString() ?? "";
                 bool cleanup = document.RootElement.GetProperty("DeleteExcludedFromDestination").GetBoolean();
                 History = ReadHistory(document.RootElement);
+                CompareAfterMirroring = document.RootElement.TryGetProperty(nameof(CompareAfterMirroring), out var compare)
+                    && compare.ValueKind == JsonValueKind.True;
                 return ExclusionLine.Parse(Line) with { DeleteExcludedFromDestination = cleanup };
             }
             var settings = document.RootElement.Deserialize<FilterSettings>() ?? new();
@@ -67,8 +71,8 @@ public sealed class ExclusionList
     /// <summary>Atomically persists all filters and their mirror cleanup option together.</summary>
     public void SaveSettings(FilterSettings settings) => SaveLine(ExclusionLine.Format(settings), settings.DeleteExcludedFromDestination);
 
-    /// <summary>Saves manual text immediately without inserting intermediate keystrokes into history.</summary>
-    public void SaveLine(string line, bool deleteExcludedFromDestination)
+    /// <summary>Saves the current preferences without inserting intermediate keystrokes into history.</summary>
+    public void SaveLine(string line, bool deleteExcludedFromDestination, bool? compareAfterMirroring = null)
     {
         Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(filePath))!);
         string temporary = filePath + "." + Guid.NewGuid().ToString("N") + ".tmp";
@@ -78,10 +82,12 @@ public sealed class ExclusionList
             {
                 ExclusionLine = line,
                 DeleteExcludedFromDestination = deleteExcludedFromDestination,
+                CompareAfterMirroring = compareAfterMirroring ?? CompareAfterMirroring,
                 History
             }));
             File.Move(temporary, filePath, true);
             Line = line;
+            CompareAfterMirroring = compareAfterMirroring ?? CompareAfterMirroring;
         }
         finally
         {

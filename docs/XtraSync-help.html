@@ -100,13 +100,13 @@
         <section id="fr-start"><h2>01 · Premiers pas</h2>
           <ol>
             <li>Lancez <code>XtraSync.exe</code> depuis un emplacement où vous pouvez écrire : l’application y place ses logs, ses rapports et son aide.</li>
-            <li>Renseignez <strong>LEFT FOLDER</strong> (dossier gauche) et <strong>RIGHT FOLDER</strong> (dossier droit), par saisie ou avec <strong>Browse…</strong>. Les deux dossiers doivent déjà exister, être accessibles et être distincts ; aucun ne doit contenir l’autre.</li>
+            <li>Renseignez <strong>LEFT FOLDER</strong> (dossier gauche) et <strong>RIGHT FOLDER</strong> (dossier droit) par saisie, avec <strong>Browse…</strong> ou en faisant glisser un dossier depuis l’Explorateur Windows sur le champ voulu. Les deux dossiers doivent exister, être accessibles et être distincts. Les dossiers imbriqués sont refusés.</li>
             <li>Choisissez les critères de comparaison et les exclusions. Par défaut, les sous-dossiers, les tailles et les dates sont pris en compte, avec une tolérance de deux secondes.</li>
             <li>Commencez avec <strong>Compare folders</strong> pour voir les différences. Cette comparaison ne modifie pas les données des dossiers ; elle crée toutefois le log de l’opération et, si demandé, un rapport.</li>
             <li>Choisissez ensuite un miroir ou une synchronisation bidirectionnelle. Examinez la liste exacte des actions, leurs nombres et leurs tailles, puis validez avec <strong>Apply mirror</strong> ou <strong>Apply synchronization</strong>.</li>
             <li>Lisez le résultat final. En cas de problèmes ou d’avertissements, consultez <code>XtraSync.log</code>, dont le chemin apparaît en bas de la fenêtre.</li>
           </ol>
-          <p>Les listes déroulantes des dossiers conservent séparément les dix derniers chemins de gauche et de droite, sans doublons. Choisir un historique ne lance aucune opération.</p>
+          <p>Déposez un seul dossier à la fois. Son chemin complet remplit le champ et rejoint l’historique de ce côté. Les fichiers et les sélections multiples sont ignorés. Les listes déroulantes conservent séparément les dix derniers chemins de gauche et de droite, sans doublons. Le choix d’un chemin dans l’historique ne lance aucune opération.</p>
         </section>
 
         <section id="fr-modes"><h2>02 · Choisir un mode</h2>
@@ -116,7 +116,8 @@
             <tr><td><strong>← Mirror to left</strong></td><td>La droite est la source, la gauche est la cible. Les mêmes règles s’appliquent en sens inverse.</td></tr>
             <tr><td><strong>Synchronize Both Way</strong></td><td>Copie les éléments présents d’un seul côté vers l’autre, et remplace une version plus ancienne par la version plus récente lorsque les règles permettent de la départager. Aucune suppression n’est propagée.</td></tr>
           </tbody></table></div>
-          <p><strong>En miroir, la source fait autorité :</strong> un fichier cible différent peut être remplacé même s’il est plus récent. Un conflit fichier/dossier peut entraîner la suppression de l’ancien élément cible et sa recréation sous le type de la source ; ces actions figurent dans la validation.</p>
+          <p><strong>En miroir, la source fait autorité.</strong> Pour deux fichiers au même chemin relatif et dans le périmètre du miroir, une différence de date détectée par <strong>Compare timestamps</strong> après application de la tolérance et de l’option horaire, ou une différence de taille détectée par <strong>Compare sizes</strong>, suffit pour prévoir le remplacement. Une source plus ancienne peut donc écraser une cible plus récente. Lorsque les critères activés donnent <strong>Equal</strong>, le fichier cible est conservé.</p>
+          <p>Un fichier source absent de la cible est prévu en copie. Un conflit fichier/dossier peut entraîner la suppression de l’élément cible et sa recréation sous le type de la source. Ces actions figurent dans l’aperçu.</p>
           <p><strong>En bidirectionnel, une suppression n’est pas mémorisée :</strong> si vous effacez un fichier d’un côté mais qu’il existe encore de l’autre, il sera recopié. Les conflits fichier/dossier et les différences sans version plus récente identifiable sont laissés inchangés et signalés dans l’aperçu. Résolvez-les manuellement puis relancez une opération.</p>
         </section>
 
@@ -131,7 +132,8 @@
           </tbody></table></div>
           <p>Si les deux critères sont décochés, deux fichiers présents au même chemin sont considérés égaux, quel que soit leur contenu. Si les dates sont désactivées ou équivalentes et que les tailles diffèrent, le mode bidirectionnel ne choisit pas arbitrairement une version : il signale un conflit.</p>
           <h3>Lire le tableau des résultats</h3>
-          <p>Les chemins sont relatifs aux racines sélectionnées ; les dates affichées utilisent l’heure locale. <strong>Equal</strong> signifie égal selon vos critères, <strong>Left only</strong> / <strong>Right only</strong> présent d’un seul côté, <strong>Left newer</strong> / <strong>Right newer</strong> plus récent à gauche / à droite, <strong>Different size</strong> taille différente, <strong>Folder</strong> dossier des deux côtés, <strong>Type conflict</strong> fichier d’un côté et dossier de l’autre, et <strong>Unavailable</strong> accès insuffisant pour conclure.</p>
+          <p>Le compteur <strong>differences</strong> donne le nombre de lignes du tableau, pour une comparaison directe comme après un miroir ou une synchronisation. <strong>Equal</strong> désigne des fichiers jugés équivalents par les critères activés. Ces fichiers et les dossiers présents des deux côtés entrent dans les totaux de comparaison. Un tableau vide après une comparaison terminée correspond à zéro différence dans le périmètre analysé.</p>
+          <p>Les chemins sont relatifs aux racines sélectionnées et les dates affichées utilisent l’heure locale. <strong>Left only</strong> / <strong>Right only</strong> indique une entrée présente d’un seul côté, <strong>Left newer</strong> / <strong>Right newer</strong> une version plus récente à gauche / à droite, <strong>Different size</strong> une taille différente, <strong>Type conflict</strong> un fichier d’un côté et un dossier de l’autre, et <strong>Unavailable</strong> un accès insuffisant pour conclure. Les entrées <strong>Unavailable</strong> figurent dans le tableau et dans le compteur <strong>differences</strong>.</p>
         </section>
 
         <section id="fr-filters"><h2>04 · Exclusions et filtres</h2>
@@ -162,12 +164,20 @@
           <ul><li><strong>Files to copy (including replacements)</strong> : nombre de fichiers à copier et taille de leurs nouvelles versions, remplacements compris.</li><li><strong>Files to delete</strong> : nombre et taille des fichiers à supprimer explicitement.</li><li><strong>Existing versions to overwrite (included above)</strong> : nombre et taille des anciennes versions à écraser. Les fichiers concernés sont déjà inclus dans le groupe des copies ; n’additionnez pas ces groupes comme s’il s’agissait de fichiers distincts.</li></ul>
           <p>Les totaux représentent des <strong>opérations</strong> : un changement de type peut produire plusieurs actions sur le même chemin. La taille des fichiers ne prédit pas exactement l’espace libre nécessaire ; la préparation d’une copie utilise un fichier temporaire dans le dossier cible.</p>
           <p><strong>Apply mirror</strong> ou <strong>Apply synchronization</strong> autorise le plan affiché. Annuler ou fermer le dialogue ne modifie pas les données. S’il n’y a aucune action, rien n’est exécuté. Avant exécution, le plan est revérifié ; une modification imprévue peut imposer un nouveau balayage et une nouvelle validation.</p>
+          <p>Les tableaux de résultats et de <strong>Review changes</strong> utilisent les mêmes barres de défilement sombres, verticales et horizontales.</p>
         </section>
 
         <section id="fr-progress"><h2>06 · Suivi et commandes</h2>
           <p>La zone inférieure suit toutes les phases : balayage, comparaison, préparation, validation et exécution. Pendant le balayage, le nombre total n’est pas encore connu ; la barre peut donc être indéterminée. Le pourcentage d’exécution porte sur les actions traitées, pas sur le temps restant.</p>
           <ul><li><strong>Copy / Delete</strong> : fichiers et tailles effectivement terminés par rapport aux valeurs prévues ; les remplacements font partie des copies.</li><li><strong>Folders</strong> : dossiers créés et supprimés, réalisés / prévus.</li><li><strong>Transferred</strong> : octets transférés, y compris les tentatives partielles ou répétées ; ce total peut dépasser la taille prévue ou les octets validés.</li><li><strong>Current file</strong> : chemin courant et progression dans le fichier pendant la copie.</li><li><strong>Problems</strong> : fichiers/dossiers en échec, opérations dépendantes ignorées, éléments déjà absents, accès indisponibles, nouvelles tentatives et nombre de fichiers distincts ayant subi une erreur de lecture.</li></ul>
-          <p>Les tailles sont formatées en unités de 1 024 octets. Après une exécution, une nouvelle comparaison actualise le tableau ; elle ne lance pas une seconde série de modifications.</p>
+          <p>Les tailles sont formatées en unités de 1 024 octets.</p>
+          <h3>Comparaison finale et activité du disque</h3>
+          <p><strong>Compare folders after mirroring</strong> s’applique aux deux sens du miroir. La case est décochée par défaut et son état est mémorisé entre les sessions. Décochée, elle laisse le tableau vide et le bilan indique <strong>Final comparison skipped</strong>. Vous pouvez alors lancer <strong>Compare folders</strong> à la demande. La synchronisation bidirectionnelle actualise automatiquement le tableau après exécution.</p>
+          <p>Si la comparaison finale est activée, <strong>Scanning folders</strong> peut s’afficher alors que les compteurs de copies et de suppressions ont atteint leurs totaux. XtraSync reparcourt les deux dossiers en lecture seule, affiche les chemins rencontrés et lit leurs métadonnées. Le volume <strong>scanned</strong> cumule les tailles des fichiers recensés. <strong>Transferred</strong> reste le volume des copies effectuées pendant l’exécution. La phase <strong>Comparing entries</strong> utilise ensuite les métadonnées pour remplir le tableau des écarts, puis le bilan du miroir s’affiche.</p>
+          <p>Cette comparaison peut révéler un changement survenu pendant ou après le miroir, par exemple une modification par un autre programme. Une comparaison ignorée laisse ces écarts éventuels à vérifier manuellement. La validation du plan, les vérifications de copie, le bilan et le log font partie de l’exécution dans les deux cas. Le contrôle final repose sur les tailles et les dates sélectionnées.</p>
+          <h3>Travail en arrière-plan et parallélisme</h3>
+          <p>Le calcul s’exécute en arrière-plan pour que l’interface reste disponible. XtraSync parcourt les deux dossiers successivement, compare les entrées en mémoire une par une et applique les actions du miroir dans l’ordre du plan. Les copies sont exécutées une à la fois, y compris en synchronisation bidirectionnelle.</p>
+          <p>Un parcours en parallèle pourrait aider sur deux supports distincts et ralentir un disque dur partagé. Une éventuelle mise en parallèle de la comparaison en mémoire, par exemple avec PLINQ, doit préserver l’ordre des résultats et agréger les compteurs. Pour les miroirs, seules les actions indépendantes peuvent se chevaucher. Une limite de tâches simultanées borne la concurrence. Une limite de débit est une mesure distincte, car une seule copie peut déjà saturer un disque lent.</p>
           <div class="table-wrap"><table><thead><tr><th scope="col">Commande</th><th scope="col">Effet</th></tr></thead><tbody>
             <tr><td><strong>Pause / Resume</strong></td><td>Suspend/reprend au prochain point de contrôle, y compris entre blocs de copie. Un appel Windows déjà bloqué peut retarder la prise en compte.</td></tr>
             <tr><td><strong>Stop</strong></td><td>Demande un arrêt propre, nettoie les temporaires lorsque possible et termine le log et le rapport demandé. Les actions déjà terminées sont conservées.</td></tr>
@@ -215,7 +225,7 @@ XtraSync-2026-11-18-14-32-09.html</code></pre>
         <section id="fr-settings"><h2>09 · Préférences et fichiers</h2>
           <div class="table-wrap"><table><thead><tr><th scope="col">Emplacement</th><th scope="col">Contenu / conservation</th></tr></thead><tbody>
             <tr><td><code>%LOCALAPPDATA%\XtraSync\folder-history.json</code></td><td>Historique des dix chemins de chaque côté. Les champs de chemins actuels ne sont pas automatiquement restaurés comme sélection active au démarrage.</td></tr>
-            <tr><td><code>%LOCALAPPDATA%\XtraSync\exclusions.json</code></td><td>Ligne d’exclusion courante, dix dernières lignes et préférence de suppression des exclus en miroir. Cette préférence est conservée entre les lancements ; vérifiez-la avant un miroir.</td></tr>
+            <tr><td><code>%LOCALAPPDATA%\XtraSync\exclusions.json</code></td><td>Ligne d’exclusion courante, dix dernières lignes et préférences de miroir. La suppression des exclus et la comparaison finale sont mémorisées entre les lancements.</td></tr>
             <tr><td>À côté de <code>XtraSync.exe</code></td><td><code>XtraSync.log</code>, éventuel <code>XtraSync.bak.log</code>, rapports HTML datés et <code>XtraSync-help.html</code>. Le verrou temporaire <code>XtraSync.run.lock</code> est normalement supprimé à la fin de la session.</td></tr>
           </tbody></table></div>
           <p>Les critères de comparaison, la tolérance et la limite d’erreurs sont conservés pour les opérations suivantes de la session, puis reviennent à leurs valeurs initiales au prochain démarrage de l’application. La demande de rapport HTML s’applique à une seule opération. En cas de problème de sauvegarde des préférences, un message est affiché ; pendant une opération, un avertissement est également journalisé.</p>
@@ -229,7 +239,7 @@ XtraSync-2026-11-18-14-32-09.html</code></pre>
 
         <section id="fr-trouble"><h2>11 · Résoudre un problème</h2>
           <div class="table-wrap"><table><thead><tr><th scope="col">Question</th><th scope="col">À vérifier</th></tr></thead><tbody>
-            <tr><td>Un fichier n’apparaît pas</td><td>Vérifiez Exclusions, les filtres de dossiers, Subfolders included et les zones Unavailable. Les fichiers propres à XtraSync sont volontairement protégés dans son dossier de sortie.</td></tr>
+            <tr><td>Un fichier n’apparaît pas</td><td>Un fichier jugé égal est compté dans le bilan et masqué dans le tableau. Vérifiez aussi <strong>Exclusions</strong>, les filtres de dossiers et <strong>Subfolders included</strong>. Une zone <strong>Unavailable</strong> peut masquer le contenu d’un dossier inaccessible. Les fichiers de sortie de XtraSync sont protégés dans son dossier de sortie.</td></tr>
             <tr><td>Un fichier supprimé revient en bidirectionnel</td><td>C’est le fonctionnement prévu : les fichiers présents d’un seul côté sont recopiés. Utilisez le miroir dans le bon sens si la source doit imposer ses suppressions.</td></tr>
             <tr><td>Un fichier cible exclu reste présent</td><td>Par défaut il est préservé. Pour le supprimer en miroir, cochez Delete excluded items from mirror destination et validez le nouveau plan. Cette option ne s’applique pas en bidirectionnel.</td></tr>
             <tr><td>« Equal » mais contenu différent</td><td>La comparaison utilise taille/date, pas le contenu. Vérifiez vos critères et la tolérance ; l’option horaire peut aussi masquer un écart de dates.</td></tr>
@@ -242,7 +252,8 @@ XtraSync-2026-11-18-14-32-09.html</code></pre>
         <section id="fr-help"><h2>12 · Cette aide suit l’exécutable</h2>
           <p>Le bouton <strong>Help</strong> recrée <code>XtraSync-help.html</code> à côté de <code>XtraSync.exe</code> à partir de la documentation intégrée, <strong>à chaque clic, même si le fichier existe déjà et est identique</strong>, puis l’ouvre dans le navigateur par défaut. Les deux langues et tous les styles sont inclus dans ce seul fichier, sans téléchargement. Toute modification manuelle de la copie générée est remplacée au clic suivant.</p>
           <p>Si l’écriture ou l’ouverture échoue, un message apparaît sous le titre de l’application, sans interrompre l’opération en cours. Si seule l’ouverture échoue, le fichier peut déjà avoir été recréé ; ouvrez-le manuellement. Si un onglet existant affiche encore une ancienne version, rechargez-le.</p>
-          <p class="small">Documentation de référence du projet : <code>docs/XtraSync-help.html</code>. Mise à jour : 18 novembre 2026.</p>
+          <p>Si vous publiez depuis les sources, <code>Publish.bat</code> attend une touche à la fin pour vous laisser lire la console et renvoie le code de sortie de la publication.</p>
+          <p class="small">La documentation de référence du projet se trouve dans <code>docs/XtraSync-help.html</code>. Dernière mise à jour le 24 novembre 2026.</p>
         </section>
         <footer>XtraSync · Guide utilisateur FR · Documentation embarquée, disponible hors connexion.</footer>
       </article>
@@ -257,13 +268,13 @@ XtraSync-2026-11-18-14-32-09.html</code></pre>
         <section id="en-start"><h2>01 · Getting started</h2>
           <ol>
             <li>Run <code>XtraSync.exe</code> from a location you can write to: the application places its logs, reports and help there.</li>
-            <li>Enter <strong>LEFT FOLDER</strong> and <strong>RIGHT FOLDER</strong>, or select them with <strong>Browse…</strong>. Both folders must already exist, be accessible and be separate; neither may contain the other.</li>
+            <li>Fill in <strong>LEFT FOLDER</strong> and <strong>RIGHT FOLDER</strong> by typing, using <strong>Browse…</strong>, or dragging a folder from File Explorer onto the field. Both folders must exist, be accessible and be separate. Nested folders are rejected.</li>
             <li>Choose your comparison criteria and exclusions. By default, subfolders, sizes and timestamps are included, with a two-second tolerance.</li>
             <li>Start with <strong>Compare folders</strong> to inspect differences. It does not change folder data, although it creates an operation log and an optional report.</li>
             <li>Choose a mirror direction or two-way synchronization. Review the exact actions, counts and sizes, then confirm with <strong>Apply mirror</strong> or <strong>Apply synchronization</strong>.</li>
             <li>Read the final result. If there are issues or warnings, check <code>XtraSync.log</code>; its path appears at the bottom of the window.</li>
           </ol>
-          <p>The folder drop-downs separately retain the ten most recent left and right paths, without duplicates. Selecting a history entry does not start an operation.</p>
+          <p>Drop one folder at a time. Its full path fills the field and is added to that side’s history. Files and multiple selections are ignored. The folder drop-downs separately retain the ten most recent left and right paths, without duplicates. Selecting a history entry does not start an operation.</p>
         </section>
 
         <section id="en-modes"><h2>02 · Choosing a mode</h2>
@@ -273,7 +284,8 @@ XtraSync-2026-11-18-14-32-09.html</code></pre>
             <tr><td><strong>← Mirror to left</strong></td><td>Right is the source and left is the destination. The same rules apply in reverse.</td></tr>
             <tr><td><strong>Synchronize Both Way</strong></td><td>Copies items present on only one side to the other, and replaces an older version with a newer version when the rules can identify one. Deletions are never propagated.</td></tr>
           </tbody></table></div>
-          <p><strong>In a mirror, the source is authoritative:</strong> a different destination file can be overwritten even if it is newer. A file/folder type conflict may require deleting the old destination item and recreating it using the source type; those actions appear in the review.</p>
+          <p><strong>In a mirror, the source is authoritative.</strong> When two files share a relative path and are within the mirror scope, either a timestamp difference detected by <strong>Compare timestamps</strong> after applying tolerance and the time-zone option, or a size difference detected by <strong>Compare sizes</strong>, is enough to schedule a replacement. An older source can overwrite a newer destination. If the enabled criteria return <strong>Equal</strong>, the destination file is kept.</p>
+          <p>A source file missing from the destination is scheduled for copying. A file/folder conflict may require deleting the destination item and recreating it using the source type. The review lists these actions.</p>
           <p><strong>Two-way synchronization does not remember deletions:</strong> deleting a file on one side while leaving it on the other causes it to be copied back. File/folder conflicts and differences without an identifiable newer version remain unchanged and appear in the preview. Resolve them manually, then run again.</p>
         </section>
 
@@ -288,7 +300,8 @@ XtraSync-2026-11-18-14-32-09.html</code></pre>
           </tbody></table></div>
           <p>If both criteria are off, two files at the same relative path are considered equal regardless of their contents. If timestamps are disabled or equivalent but sizes differ, two-way synchronization reports a conflict instead of choosing a version arbitrarily.</p>
           <h3>Reading the results table</h3>
-          <p>Paths are relative to the selected roots; displayed timestamps use local time. <strong>Equal</strong> means equal under your criteria, <strong>Left only</strong> / <strong>Right only</strong> present on one side, <strong>Left newer</strong> / <strong>Right newer</strong> newer on that side, <strong>Different size</strong> unequal sizes, <strong>Folder</strong> a folder on both sides, <strong>Type conflict</strong> a file on one side and folder on the other, and <strong>Unavailable</strong> insufficient access to reach a conclusion.</p>
+          <p>The <strong>differences</strong> counter matches the number of rows in the table, both for a direct comparison and after a mirror or synchronization. <strong>Equal</strong> means the files match under the enabled criteria. Matching files and folders present on both sides are included in the comparison totals. An empty table after a completed comparison means zero differences within the scanned scope.</p>
+          <p>Paths are relative to the selected roots, and timestamps use local time. <strong>Left only</strong> / <strong>Right only</strong> indicates an entry present on one side, <strong>Left newer</strong> / <strong>Right newer</strong> a newer version on that side, <strong>Different size</strong> unequal sizes, <strong>Type conflict</strong> a file on one side and a folder on the other, and <strong>Unavailable</strong> insufficient access to reach a conclusion. <strong>Unavailable</strong> entries appear in the table and count toward <strong>differences</strong>.</p>
         </section>
 
         <section id="en-filters"><h2>04 · Exclusions and filters</h2>
@@ -319,12 +332,20 @@ XtraSync-2026-11-18-14-32-09.html</code></pre>
           <ul><li><strong>Files to copy (including replacements)</strong>: file count and size of new versions to copy, including replacements.</li><li><strong>Files to delete</strong>: count and size of files scheduled for explicit deletion.</li><li><strong>Existing versions to overwrite (included above)</strong>: count and size of old versions to overwrite. These files are already included in the copy group; do not add the groups as if they represented distinct files.</li></ul>
           <p>Totals describe <strong>operations</strong>: a type change may involve several actions on the same path. File sizes do not precisely predict required free space; preparing a copy uses a temporary file in the destination directory.</p>
           <p><strong>Apply mirror</strong> or <strong>Apply synchronization</strong> authorizes the displayed plan. Cancelling or closing the dialog does not change folder data. With no actions, nothing is executed. The plan is revalidated before execution; unexpected changes may require another scan and review.</p>
+          <p>The results table and the <strong>Review changes</strong> table use the same dark vertical and horizontal scrollbars.</p>
         </section>
 
         <section id="en-progress"><h2>06 · Progress and controls</h2>
           <p>The lower panel tracks scanning, comparison, planning, review and execution. Scanning has no known total yet, so the bar may be indeterminate. Execution percentage measures processed actions, rather than time remaining.</p>
           <ul><li><strong>Copy / Delete</strong>: completed file counts and sizes against planned values; replacements are included in copies.</li><li><strong>Folders</strong>: folders created and deleted, completed / planned.</li><li><strong>Transferred</strong>: bytes transferred, including partial or repeated attempts; this can exceed the planned payload or committed bytes.</li><li><strong>Current file</strong>: current path and within-file copy progress.</li><li><strong>Problems</strong>: failed files/folders, skipped dependent work, already-absent items, unavailable entries, retries and distinct files with read errors.</li></ul>
-          <p>Formatted sizes use units of 1,024 bytes. After execution, a fresh comparison updates the table; it does not start another round of changes.</p>
+          <p>Formatted sizes use units of 1,024 bytes.</p>
+          <h3>Final comparison and disk activity</h3>
+          <p><strong>Compare folders after mirroring</strong> applies to either mirror direction. It is off by default and saved between sessions. When it is off, the table stays empty and the outcome shows <strong>Final comparison skipped</strong>. You can run <strong>Compare folders</strong> on demand. Both-way synchronization refreshes the table automatically after execution.</p>
+          <p>With the final comparison enabled, <strong>Scanning folders</strong> can appear after the copy and deletion counters reach their totals. XtraSync scans both folders again in read-only mode, displaying each path as it reads its metadata. The <strong>scanned</strong> volume adds up the sizes of the files found. <strong>Transferred</strong> still shows the bytes copied during execution. <strong>Comparing entries</strong> then uses the collected metadata to populate the differences table before the mirror outcome is displayed.</p>
+          <p>This comparison can reveal changes made during or after the mirror, for example by another program. Skipping it leaves any such differences to be checked manually. Plan revalidation, copy checks, the outcome and the log are part of execution in either case. The final check uses the selected size and timestamp criteria.</p>
+          <h3>Background work and parallelism</h3>
+          <p>Work runs in the background so the interface remains available. XtraSync scans the two folders in sequence, compares entries in memory one at a time and applies mirror actions in plan order. Files are copied one at a time, including in both-way synchronization.</p>
+          <p>Parallel scans could help on separate devices and slow down a shared hard drive. A parallel in-memory comparison, for example with PLINQ, would need to preserve result order and aggregate counters. Only independent mirror actions could overlap. A concurrency limit caps the number of active tasks. A bandwidth limit is a separate control, since one copy can saturate a slow drive.</p>
           <div class="table-wrap"><table><thead><tr><th scope="col">Control</th><th scope="col">Effect</th></tr></thead><tbody>
             <tr><td><strong>Pause / Resume</strong></td><td>Pauses/resumes at the next checkpoint, including between copy blocks. An already-blocked Windows call can delay this.</td></tr>
             <tr><td><strong>Stop</strong></td><td>Requests a clean stop, cleans temporary files where possible and finalizes the log and requested report. Completed actions remain in place.</td></tr>
@@ -372,7 +393,7 @@ XtraSync-2026-11-18-14-32-09.html</code></pre>
         <section id="en-settings"><h2>09 · Preferences and files</h2>
           <div class="table-wrap"><table><thead><tr><th scope="col">Location</th><th scope="col">Contents / retention</th></tr></thead><tbody>
             <tr><td><code>%LOCALAPPDATA%\XtraSync\folder-history.json</code></td><td>Ten recent paths per side. Current path fields are not automatically restored as active selections on application startup.</td></tr>
-            <tr><td><code>%LOCALAPPDATA%\XtraSync\exclusions.json</code></td><td>Current exclusion line, ten recent lines and mirror excluded-item deletion preference. This preference survives application restarts; check it before mirroring.</td></tr>
+            <tr><td><code>%LOCALAPPDATA%\XtraSync\exclusions.json</code></td><td>Current exclusion line, ten recent lines and mirror preferences. The excluded-item deletion and final comparison preferences are saved between launches.</td></tr>
             <tr><td>Beside <code>XtraSync.exe</code></td><td><code>XtraSync.log</code>, optional <code>XtraSync.bak.log</code>, timestamped HTML reports and <code>XtraSync-help.html</code>. The temporary <code>XtraSync.run.lock</code> is normally removed when the session closes.</td></tr>
           </tbody></table></div>
           <p>Comparison criteria, tolerance and read-error limit remain selected for later runs in the current session, then return to initial values at the next application startup. The HTML report request lasts for one run. Preference-save failures are displayed; during an operation, they also generate a log warning.</p>
@@ -386,7 +407,7 @@ XtraSync-2026-11-18-14-32-09.html</code></pre>
 
         <section id="en-trouble"><h2>11 · Troubleshooting</h2>
           <div class="table-wrap"><table><thead><tr><th scope="col">Question</th><th scope="col">Check</th></tr></thead><tbody>
-            <tr><td>A file is missing from the list</td><td>Check Exclusions, folder filters, Subfolders included and Unavailable scopes. XtraSync’s own output files are intentionally protected in its output directory.</td></tr>
+            <tr><td>A file is missing from the list</td><td>A matching file is counted in the summary and hidden from the table. Also check <strong>Exclusions</strong>, folder filters and <strong>Subfolders included</strong>. An <strong>Unavailable</strong> scope can hide the contents of an inaccessible folder. XtraSync’s own output files are protected in its output directory.</td></tr>
             <tr><td>A deleted file returns in two-way mode</td><td>This is expected: items on one side are copied to the other. Choose the appropriate mirror direction if the source must impose its deletions.</td></tr>
             <tr><td>An excluded destination file remains</td><td>It is preserved by default. To delete it in a mirror, select Delete excluded items from mirror destination and review the new plan. This option never applies in two-way mode.</td></tr>
             <tr><td>“Equal” but different contents</td><td>Comparison uses size/timestamp rather than content. Check your criteria and tolerance; the whole-hour option can also hide a timestamp difference.</td></tr>
@@ -399,7 +420,8 @@ XtraSync-2026-11-18-14-32-09.html</code></pre>
         <section id="en-help"><h2>12 · Help travels with the executable</h2>
           <p>The <strong>Help</strong> button recreates <code>XtraSync-help.html</code> beside <code>XtraSync.exe</code> from the embedded documentation <strong>on every click, even when the existing file is identical</strong>, then opens it in the default browser. Both languages and all styles are included in this single file, with no downloads. Manual edits to the generated copy are replaced on the next click.</p>
           <p>If writing or opening fails, a message appears under the application title without interrupting the current operation. If only opening fails, the file may already have been recreated; open it manually. If an existing browser tab still shows an old version, reload it.</p>
-          <p class="small">Project documentation source: <code>docs/XtraSync-help.html</code>. Updated: 18 November 2026.</p>
+          <p>When publishing from the source tree, <code>Publish.bat</code> waits for a keypress so you can read the console and then returns the original publishing exit code.</p>
+          <p class="small">The project documentation source is <code>docs/XtraSync-help.html</code>. Last updated on 24 November 2026.</p>
         </section>
         <footer>XtraSync · EN user guide · Embedded documentation, available offline.</footer>
       </article>

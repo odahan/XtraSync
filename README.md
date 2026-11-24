@@ -2,7 +2,7 @@
 
 XtraSync is a Windows desktop application for comparing two folders, mirroring one folder to another, or synchronizing files in both directions. It shows the planned copies, replacements, and deletions before asking you to apply them.
 
-[Download XtraSync 1.0.1 for Windows x64](https://github.com/odahan/XtraSync/releases/tag/V101)
+[Download XtraSync 1.0.2 for Windows x64](https://github.com/odahan/XtraSync/releases/tag/V102)
 
 Download `XtraSync.exe` and run it from a writable folder. The executable includes the .NET runtime and needs no installer. XtraSync writes its logs, optional reports, and generated help beside the executable.
 

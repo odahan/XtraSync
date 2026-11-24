@@ -82,7 +82,26 @@ public sealed class MainViewModelTests : TestWorkspace
         model.RememberFolder(true);
         Assert.StartsWith("Folder history could not be saved:", model.Status);
         model.Exclusions = "*.tmp";
-        Assert.StartsWith("Exclusions could not be saved:", model.Status);
+        Assert.StartsWith("Preferences could not be saved:", model.Status);
+    }
+
+    [Fact]
+    public void PostMirrorComparisonPreferenceDefaultsOffAndPersistsAcrossModels()
+    {
+        File.WriteAllText(Path.Combine(Root, "exclusions.json"),
+            """{"ExclusionLine":"*.tmp","DeleteExcludedFromDestination":true}""");
+        var model = CreateViewModel();
+        Assert.False(model.CompareAfterMirroring);
+
+        model.CompareAfterMirroring = true;
+        model.Exclusions = "*.bak";
+        var restored = CreateViewModel();
+        Assert.True(restored.CompareAfterMirroring);
+        Assert.True(restored.DeleteExcludedFromDestination);
+        Assert.Equal("*.bak", restored.Exclusions);
+
+        restored.CompareAfterMirroring = false;
+        Assert.False(CreateViewModel().CompareAfterMirroring);
     }
 
     [Fact]
@@ -149,14 +168,18 @@ public sealed class MainViewModelTests : TestWorkspace
         model.Exclusions = "*.tmp";
         model.IncludeSubfolders = false;
         await model.CompareCommand.ExecuteAsync(null);
-        Assert.Single(model.Rows);
+        Assert.Empty(model.Rows);
         Assert.Contains("1 equal files", model.Status);
+        Assert.Contains("0 differences", model.Status);
         AssertIdle(model);
         Write(Right, "new");
         Assert.True(model.RestartCommand.CanExecute(null));
         await model.RestartCommand.ExecuteAsync(null);
-        Assert.Equal(2, model.Rows.Count);
-        Assert.Contains(model.Rows, row => row.RelativePath == "new" && row.Status == "Right only");
+        var row = Assert.Single(model.Rows);
+        Assert.Equal("new", row.RelativePath);
+        Assert.Equal("Right only", row.Status);
+        Assert.Contains("2 items", model.Status);
+        Assert.Contains("1 differences", model.Status);
     }
 
     [Theory]
@@ -182,9 +205,56 @@ public sealed class MainViewModelTests : TestWorkspace
         Assert.Equal(1, reviews);
         Assert.Contains("finished", model.Status);
         AssertIdle(model);
-        Assert.All(model.Rows, row => Assert.Equal("Equal", row.Status));
+        Assert.Empty(model.Rows);
+        if (mode == MirrorMode.Both)
+        {
+            Assert.Contains("2 equal files", model.Statistics);
+            Assert.Contains("0 differences", model.Statistics);
+        }
+        else
+        {
+            Assert.Contains("Final comparison skipped", model.Status);
+            string log = File.ReadAllText(Path.Combine(Root, "reports", "XtraSync.log"));
+            Assert.DoesNotContain("Phase: Comparing entries", log);
+        }
         Assert.Equal(mode == MirrorMode.Both ? 2 : 1, Directory.GetFiles(Left).Length);
         Assert.Equal(mode == MirrorMode.Both ? 2 : 1, Directory.GetFiles(Right).Length);
+    }
+
+    [Theory]
+    [InlineData(MirrorMode.Left)]
+    [InlineData(MirrorMode.Right)]
+    public async Task EnabledPostMirrorComparisonShowsOnlyRemainingDifferences(MirrorMode mode)
+    {
+        string source = mode == MirrorMode.Left ? Right : Left;
+        string destination = mode == MirrorMode.Left ? Left : Right;
+        Write(source, "shared/file");
+        Directory.CreateDirectory(Path.Combine(destination, "shared"));
+        string[] remaining = ["first", "second", "third"];
+        var fs = new FaultFileSystem
+        {
+            MoveFault = (_, _) =>
+            {
+                foreach (string path in remaining) Write(destination, path);
+                return null;
+            }
+        };
+        var model = new MainViewModel(new FolderHistory(Path.Combine(Root, "history.json")),
+            new ExclusionList(Path.Combine(Root, "exclusions.json")), new RunLogStore(Path.Combine(Root, "reports")), fs.Policy())
+        {
+            LeftPath = Left, RightPath = Right, CompareAfterMirroring = true, ConfirmMirror = _ => true
+        };
+
+        await Command(model, mode).ExecuteAsync(null);
+
+        Assert.True(model.CompareAfterMirroring);
+        Assert.Equal(remaining, model.Rows.Select(row => row.RelativePath));
+        Assert.All(model.Rows, row => Assert.Equal(mode == MirrorMode.Left ? "Left only" : "Right only", row.Status));
+        Assert.Contains("Compared 5 / 5 items", model.Statistics);
+        Assert.Contains("1 equal files", model.Statistics);
+        Assert.Contains("3 differences", model.Statistics);
+        Assert.DoesNotContain("Final comparison skipped", model.Status);
+        AssertIdle(model);
     }
 
     [Theory]

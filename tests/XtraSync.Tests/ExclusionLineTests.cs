@@ -207,6 +207,6 @@ public sealed class ExclusionLineTests : TestWorkspace
         var model = new MainViewModel(new FolderHistory(Path.Combine(Root, "history.json")), new ExclusionList(Left), new RunLogStore(Path.Combine(Root, "reports")));
         model.Exclusions = "*.tmp";
         model.RememberExclusions();
-        Assert.StartsWith("Exclusions could not be saved:", model.Status);
+        Assert.StartsWith("Preferences could not be saved:", model.Status);
     }
 }

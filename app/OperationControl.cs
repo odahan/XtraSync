@@ -157,7 +157,7 @@ public sealed class OperationControl : IDisposable
             else { files++; bytes += entry.Size; }
         }
         if (status == "Equal") equalFiles++;
-        else if (status != "Folder") differentItems++;
+        else if (FolderService.IsDifference(status)) differentItems++;
         ProcessedItem(currentPath);
     }
 

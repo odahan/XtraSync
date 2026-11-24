@@ -62,8 +62,13 @@ public static class FolderService
         return settings.CompareSize && left.Size != right.Size ? "Different size" : "Equal";
     }
 
+    internal static bool IsDifference(string status) => status is not ("Equal" or "Folder");
+
     public static List<ComparisonRow> Compare(string leftRoot, string rightRoot, ComparisonSettings settings,
-        OperationControl? control = null)
+        OperationControl? control = null) => Compare(leftRoot, rightRoot, settings, control, differencesOnly: false);
+
+    internal static List<ComparisonRow> Compare(string leftRoot, string rightRoot, ComparisonSettings settings,
+        OperationControl? control, bool differencesOnly)
     {
         using var owned = control is null ? new OperationControl() : null;
         control ??= owned!;
@@ -79,17 +84,21 @@ public static class FolderService
             .Union(left.UnavailablePaths, StringComparer.OrdinalIgnoreCase).Union(right.UnavailablePaths, StringComparer.OrdinalIgnoreCase)
             .Order(StringComparer.OrdinalIgnoreCase).ToArray();
         control.Begin("Comparing entries", paths.Length, OperationStage.Comparing);
-        var rows = paths.Select(path =>
-            {
-                control.Checkpoint();
-                left.TryGetValue(path, out Entry? first);
-                right.TryGetValue(path, out Entry? second);
-                bool unavailable = left.UnavailablePaths.Concat(right.UnavailablePaths).Any(scope => ResilientOperations.Contains(path, scope));
-                string status = unavailable ? "Unavailable" : Status(first, second, settings);
-                control.Compared(Path.Combine(leftRoot, path), first, second, status);
-                return new ComparisonRow(path.Length == 0 ? "(root)" : path, status, unavailable ? "Unavailable" : Size(first), unavailable ? "Unavailable" : Size(second),
-                    Modified(first), Modified(second));
-            }).ToList();
+        var rows = new List<ComparisonRow>();
+        foreach (string path in paths)
+        {
+            control.Checkpoint();
+            left.TryGetValue(path, out Entry? first);
+            right.TryGetValue(path, out Entry? second);
+            bool unavailable = left.UnavailablePaths.Concat(right.UnavailablePaths).Any(scope => ResilientOperations.Contains(path, scope));
+            string status = unavailable ? "Unavailable" : Status(first, second, settings);
+            control.Compared(Path.Combine(leftRoot, path), first, second, status);
+            if (differencesOnly && !IsDifference(status)) continue;
+
+            rows.Add(new ComparisonRow(path.Length == 0 ? "(root)" : path, status,
+                unavailable ? "Unavailable" : Size(first), unavailable ? "Unavailable" : Size(second),
+                Modified(first), Modified(second)));
+        }
         control.Publish(true);
         return rows;
     }

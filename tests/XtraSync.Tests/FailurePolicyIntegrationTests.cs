@@ -59,6 +59,7 @@ public sealed class FailurePolicyIntegrationTests : TestWorkspace
         string inaccessible = Path.Combine(Left, "unknown");
         var fs = new FaultFileSystem { EnumerationFault = (path, _) => path == inaccessible ? new UnauthorizedAccessException() : null };
         var model = Model(fs);
+        model.CompareAfterMirroring = true;
         bool reviewed = false;
         model.ConfirmMirror = plan =>
         {

@@ -78,6 +78,38 @@ public partial class MainWindow : Window
         return dialog.ShowDialog(this) == true ? dialog.FolderName : null;
     }
 
+    /// <summary>Shows the drop effect for a single directory from File Explorer.</summary>
+    private void FolderPreviewDragOver(object sender, DragEventArgs e)
+    {
+        e.Effects = GetDroppedFolder(sender, e) is null ? DragDropEffects.None : DragDropEffects.Copy;
+        e.Handled = true;
+    }
+
+    /// <summary>Applies the dropped directory to the folder field under the pointer.</summary>
+    private void FolderPreviewDrop(object sender, DragEventArgs e)
+    {
+        string? path = GetDroppedFolder(sender, e);
+        e.Effects = path is null ? DragDropEffects.None : DragDropEffects.Copy;
+        e.Handled = true;
+
+        if (path is not null)
+        {
+            ((MainViewModel)DataContext).SetFolder(path, sender == LeftFolder);
+        }
+    }
+
+    private static string? GetDroppedFolder(object sender, DragEventArgs e)
+    {
+        if (((ComboBox)sender).IsEnabled && (e.AllowedEffects & DragDropEffects.Copy) != 0 &&
+            e.Data.GetData(DataFormats.FileDrop, autoConvert: false) is string[] { Length: 1 } paths &&
+            Directory.Exists(paths[0]))
+        {
+            return paths[0];
+        }
+
+        return null;
+    }
+
     private void FolderLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
     {
         var comboBox = (ComboBox)sender;

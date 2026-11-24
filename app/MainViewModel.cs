@@ -32,6 +32,7 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private string exclusions = "";
     [ObservableProperty] private List<string> exclusionHistory = [];
     [ObservableProperty] private bool deleteExcludedFromDestination;
+    [ObservableProperty] private bool compareAfterMirroring;
 
     public string FileExclusions
     {
@@ -124,6 +125,7 @@ public partial class MainViewModel : ObservableObject
         exclusions = exclusionList.Line;
         ExclusionHistory = [.. exclusionList.History];
         deleteExcludedFromDestination = filters.DeleteExcludedFromDestination;
+        compareAfterMirroring = exclusionList.CompareAfterMirroring;
         folderHistory.Load();
         LeftFolderHistory = [.. folderHistory.Left];
         RightFolderHistory = [.. folderHistory.Right];
@@ -159,13 +161,19 @@ public partial class MainViewModel : ObservableObject
             return;
         }
 
+        SetFolder(selected, isLeft);
+    }
+
+    /// <summary>Sets a chosen folder and persists it in the corresponding recent history.</summary>
+    internal void SetFolder(string path, bool isLeft)
+    {
         if (isLeft)
         {
-            LeftPath = selected;
+            LeftPath = path;
         }
         else
         {
-            RightPath = selected;
+            RightPath = path;
         }
 
         RememberFolder(isLeft);
@@ -215,29 +223,30 @@ public partial class MainViewModel : ObservableObject
         if (edited is null) return;
         Exclusions = ExclusionLine.Format(edited);
         RememberExclusions();
-        SaveFilters();
+        SavePreferences();
     }
 
     partial void OnExclusionsChanged(string value)
     {
         OnPropertyChanged(nameof(FileExclusions));
         OnPropertyChanged(nameof(FolderExclusions));
-        SaveFilters();
+        SavePreferences();
     }
-    partial void OnDeleteExcludedFromDestinationChanged(bool value) => SaveFilters();
+    partial void OnDeleteExcludedFromDestinationChanged(bool value) => SavePreferences();
+    partial void OnCompareAfterMirroringChanged(bool value) => SavePreferences();
 
-    private void SaveFilters()
+    private void SavePreferences()
     {
         OnPropertyChanged(nameof(FilterSummary));
         try
         {
-            exclusionList.SaveLine(Exclusions, DeleteExcludedFromDestination);
+            exclusionList.SaveLine(Exclusions, DeleteExcludedFromDestination, CompareAfterMirroring);
         }
         catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
         {
-            Status = $"Exclusions could not be saved: {exception.Message}";
+            Status = $"Preferences could not be saved: {exception.Message}";
             if (activeRun is not null) control?.Issue(new(ErrorCategory.Configuration, IssueOutcome.Warning,
-                Phase, "Save exclusions", "exclusions.json", Status, Exception: exception));
+                Phase, "Save preferences", "exclusions.json", Status, Exception: exception));
         }
     }
 
@@ -248,7 +257,7 @@ public partial class MainViewModel : ObservableObject
         string current = Exclusions;
         ExclusionHistory = [.. exclusionList.History];
         Exclusions = current;
-        SaveFilters();
+        SavePreferences();
     }
 
     private ComparisonSettings Settings()
@@ -359,6 +368,8 @@ public partial class MainViewModel : ObservableObject
         int currentGeneration = ++generation;
         long lastSequence = 0;
         bool completedSuccessfully = false;
+        bool finalComparisonSkipped = false;
+        bool compareAfterExecution = mode == MirrorMode.Both || CompareAfterMirroring;
         bool createHtml = GenerateHtmlReport;
         runReadErrorLimit = ReadErrorLimit;
         RunLogSession? run = null;
@@ -434,9 +445,10 @@ public partial class MainViewModel : ObservableObject
             if (mode is null)
             {
                 Status = "Comparing folders…";
-                Rows = await Task.Run(() => FolderService.Compare(left, right, settings, operation));
-                Status = $"{Rows.Count:N0} items · {Rows.Count(x => x.Status == "Equal"):N0} equal files · " +
-                    $"{Rows.Count(x => x.Status is not ("Equal" or "Folder")):N0} differences";
+                Rows = await Task.Run(() => FolderService.Compare(left, right, settings, operation, differencesOnly: true));
+                OperationProgress comparison = operation.Snapshot;
+                Status = $"{comparison.Total:N0} items · {comparison.EqualFiles:N0} equal files · " +
+                    $"{comparison.DifferentItems:N0} differences";
             }
             else
             {
@@ -465,7 +477,15 @@ public partial class MainViewModel : ObservableObject
                 Status = mode == MirrorMode.Both ? "Synchronizing both ways…" : "Mirroring folders…";
                 ExecutionResult result = await Task.Run(() => FolderService.Execute(plan, operation));
                 UpdateProgress(operation.Snapshot);
-                Rows = await Task.Run(() => FolderService.Compare(left, right, settings, operation));
+                if (compareAfterExecution)
+                {
+                    Status = "Comparing folders after execution…";
+                    Rows = await Task.Run(() => FolderService.Compare(left, right, settings, operation, differencesOnly: true));
+                }
+                else
+                {
+                    finalComparisonSkipped = true;
+                }
                 Status = $"{(mode == MirrorMode.Both ? "Synchronization" : "Mirror")} finished · " +
                     $"{result.Applied.CopyFiles + result.Applied.DeleteFiles + result.Applied.CreateFolders + result.Applied.DeleteFolders:N0} operations completed · {conflicts:N0} conflicts left unchanged.";
             }
@@ -503,6 +523,8 @@ public partial class MainViewModel : ObservableObject
                     $"{Problems.Conflicts:N0} conflicts. See the log.";
             else if (completedSuccessfully && Problems.HasWarnings)
                 Status += $" Completed with warnings: {Problems.Retries:N0} retries, {Problems.Recovered:N0} recovered operations, {Problems.Warnings:N0} other warnings. See the log.";
+            if (finalComparisonSkipped)
+                Status += " Final comparison skipped.";
             try
             {
                 if (run is not null)

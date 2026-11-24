@@ -23,8 +23,9 @@
           <Button DockPanel.Dock="Right" Content="Browse…" Command="{Binding BrowseLeftCommand}" Margin="8,0,0,0" ToolTip="Choose the left folder"/>
           <ComboBox x:Name="LeftFolder" IsEditable="True" IsTextSearchEnabled="False" ItemsSource="{Binding LeftFolderHistory}"
                     Text="{Binding LeftPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxDropDownHeight="360"
+                    AllowDrop="True" PreviewDragEnter="FolderPreviewDragOver" PreviewDragOver="FolderPreviewDragOver" PreviewDrop="FolderPreviewDrop"
                     LostKeyboardFocus="FolderLostKeyboardFocus" PreviewKeyDown="FolderPreviewKeyDown"
-                    ToolTip="Enter a folder path or select one of the last 10 left folders" AutomationProperties.Name="Left folder"/>
+                    ToolTip="Drop a folder from File Explorer, enter a path, or pick a recent folder" AutomationProperties.Name="Left folder"/>
         </DockPanel>
       </StackPanel>
       <StackPanel Grid.Column="2">
@@ -33,8 +34,9 @@
           <Button DockPanel.Dock="Right" Content="Browse…" Command="{Binding BrowseRightCommand}" Margin="8,0,0,0" ToolTip="Choose the right folder"/>
           <ComboBox x:Name="RightFolder" IsEditable="True" IsTextSearchEnabled="False" ItemsSource="{Binding RightFolderHistory}"
                     Text="{Binding RightPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxDropDownHeight="360"
+                    AllowDrop="True" PreviewDragEnter="FolderPreviewDragOver" PreviewDragOver="FolderPreviewDragOver" PreviewDrop="FolderPreviewDrop"
                     LostKeyboardFocus="FolderLostKeyboardFocus" PreviewKeyDown="FolderPreviewKeyDown"
-                    ToolTip="Enter a folder path or select one of the last 10 right folders" AutomationProperties.Name="Right folder"/>
+                    ToolTip="Drop a folder from File Explorer, enter a path, or pick a recent folder" AutomationProperties.Name="Right folder"/>
         </DockPanel>
       </StackPanel>
     </Grid>
@@ -55,6 +57,8 @@
           <CheckBox Content="Ignore whole-hour time zone differences" IsChecked="{Binding IgnoreTimeZone}"/>
           <CheckBox Content="Delete excluded items from mirror destination" IsChecked="{Binding DeleteExcludedFromDestination}"
                     Margin="0,10,18,0" ToolTip="Off by default. Only for Mirror to right/left: excluded target items are listed for deletion in the review and removed after Apply mirror. Both-way synchronization always ignores exclusions without deleting them."/>
+          <CheckBox Content="Compare folders after mirroring" IsChecked="{Binding CompareAfterMirroring}" Margin="0,10,18,0"
+                    ToolTip="Scan both folders again after Mirror to right or Mirror to left to update the results table."/>
           <CheckBox Content="Create HTML report after this run" IsChecked="{Binding GenerateHtmlReport}" Margin="0,10,18,0"
                     ToolTip="Creates a timestamped HTML report beside XtraSync.exe, including errors, warnings and all statistics. This option resets after each comparison, mirror or synchronization."/>
           <StackPanel Orientation="Horizontal" Margin="0,10,18,0">
